@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace SpaceDefender
 {
@@ -16,6 +17,10 @@ namespace SpaceDefender
             _color = Color.White;
             _viewportWidth = viewportWidth;
             _viewportHeight = viewportHeight;
+        }
+
+        public void Update(GameTime gameTime, KeyboardState keyboardState)
+        {
         }
 
         public void Draw(SpriteBatch spriteBatch)

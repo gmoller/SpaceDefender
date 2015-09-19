@@ -13,9 +13,9 @@ namespace SpaceDefender
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Backdrop _backdrop;
-        private Alien _alien;
-        private Hud _hud;
+        //private Backdrop _backdrop;
+        //private Alien _alien1;
+        //private Hud _hud;
 
         private readonly List<IGameObject> _gameObjects = new List<IGameObject>();
 
@@ -51,14 +51,20 @@ namespace SpaceDefender
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _backdrop = new Backdrop(Content.Load<Texture2D>("space"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            _gameObjects.Add(_backdrop);
+            IGameObject backdrop = new Backdrop(Content.Load<Texture2D>("space"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            _gameObjects.Add(backdrop);
 
-            _alien = new Alien(Content.Load<Texture2D>("ship (3)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f));
-            _gameObjects.Add(_alien);
+            IGameObject player = new Player(Content.Load<Texture2D>("ship (1)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - 50.0f));
+            _gameObjects.Add(player);
 
-            _hud = new Hud(Content.Load<SpriteFont>("arial-32"), GraphicsDevice.Viewport.Width) { Score = 0, Lives = 3 };
-            _gameObjects.Add(_hud);
+            IGameObject alien1 = new Alien(Content.Load<Texture2D>("ship (3)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f));
+            _gameObjects.Add(alien1);
+
+            IGameObject alien2 = new Alien2(Content.Load<Texture2D>("ship (4)"), new Vector2(100.0f, 100.0f));
+            _gameObjects.Add(alien2);
+
+            IGameObject hud = new Hud(Content.Load<SpriteFont>("arial-32"), GraphicsDevice.Viewport.Width) { Score = 0, Lives = 3 };
+            _gameObjects.Add(hud);
         }
 
         /// <summary>
@@ -77,11 +83,17 @@ namespace SpaceDefender
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            KeyboardState keyboardState = Keyboard.GetState();
 
-            // move alien around
-            _alien.MoveRandomly(gameTime);
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+            }
+
+            foreach (IGameObject item in _gameObjects)
+            {
+                item.Update(gameTime, keyboardState);
+            }
 
             base.Update(gameTime);
         }
