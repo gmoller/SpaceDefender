@@ -13,7 +13,7 @@ namespace SpaceDefender
         internal int Lives { get; set; }
 
         internal Hud(SpriteFont font, int viewportWidth, int viewportHeight)
-            : base(null, new Vector2(viewportWidth / 2.0f, viewportHeight / 2.0f), viewportWidth, viewportHeight)
+            : base(null, viewportWidth, viewportHeight)
         {
             _font = font;
             _padding = new Vector2(20.0f, 10.0f);

@@ -10,10 +10,11 @@ namespace SpaceDefender
     /// </summary>
     public class Game1 : Game
     {
+        internal static bool ShowBounds;
+
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
-        //private Primitives2D _primitives2D;
+        private KeyboardState _previousState;
 
         private readonly List<IDrawableGameComponent> _gameObjects = new List<IDrawableGameComponent>();
 
@@ -35,10 +36,19 @@ namespace SpaceDefender
         /// </summary>
         protected override void Initialize()
         {
+            //Window.Position = new Point(0, 0);
+            //Window.IsBorderless = true;
+
+            // make full-screen and set resolution to monitors resolution
+            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
+
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            //_primitives2D = new Primitives2D(GraphicsDevice, _spriteBatch);
             Primitives2D.Initialize(GraphicsDevice, _spriteBatch);
+            _previousState = Keyboard.GetState();
 
             base.Initialize();
         }
@@ -49,7 +59,7 @@ namespace SpaceDefender
         /// </summary>
         protected override void LoadContent()
         {
-            IDrawableGameComponent backdrop = new Backdrop(Content.Load<Texture2D>("space"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            IDrawableGameComponent backdrop = new Backdrop(Content.Load<Texture2D>("stars"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             _gameObjects.Add(backdrop);
 
             IDrawableGameComponent player = new Player(Content.Load<Texture2D>("ship (1)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - 50.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -88,12 +98,21 @@ namespace SpaceDefender
                 Exit();
             }
 
+            if (keyboardState.IsKeyDown(Keys.F1) && !_previousState.IsKeyDown(Keys.F1))
+            {
+                ShowBounds = !ShowBounds;
+            }
+
             foreach (IDrawableGameComponent item in _gameObjects)
             {
                 item.Update(gameTime, keyboardState);
             }
 
+            // TODO: collision detection
+
             base.Update(gameTime);
+
+            _previousState = keyboardState;
         }
 
         /// <summary>
@@ -115,5 +134,12 @@ namespace SpaceDefender
 
             base.Draw(gameTime);
         }
+    }
+
+    internal enum BoundsCheck
+    {
+        InBounds = 0,
+        OutsideLeftOrRight = 1,
+        OutsideTopOrBottom = 2
     }
 }

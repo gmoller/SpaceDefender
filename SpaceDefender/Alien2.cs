@@ -20,38 +20,75 @@ namespace SpaceDefender
             //MovementVector = new Vector2(1.0f, 0.0f);  // East
             //MovementVector = new Vector2(0.0f, 1.0f);  // South
             //MovementVector = new Vector2(-1.0f, 0.0f); // West
+
+            MovementVector = new Vector2(1.0f, 0.3f);
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState)
         {
             const float epsilon = 0.0001f;
 
+            // do nothing if MovementVector is zero
             if (Math.Abs(MovementVector.X - 0) < epsilon && Math.Abs(MovementVector.Y - 0) < epsilon)
             {
                 return;
             }
 
-            // convert movementVector to radians (or degrees)
-            double angleFromVector = Math.Atan2(MovementVector.X, -MovementVector.Y);
+            AdjustRotation(gameTime);
 
-            // and then get rotation closer to the angle
-            AdjustRotation(angleFromVector);
+            // calculate new sprite position
+            float distance = gameTime.ElapsedGameTime.Milliseconds / 2.0f;
+            Vector2 newPosition = CenterPosition + (MovementVector * distance);
 
-            int distance = gameTime.ElapsedGameTime.Milliseconds / 10;
-
-            CenterPosition += MovementVector * distance;
+            BoundsCheck check = WithinScreenBounds(newPosition);
+            if (check == BoundsCheck.InBounds)
+            {
+                CenterPosition = newPosition;
+            }
+            else
+            {
+                if (check == BoundsCheck.OutsideLeftOrRight)
+                {
+                    MovementVector.X = -MovementVector.X;
+                }
+                else
+                {
+                    MovementVector.Y = -MovementVector.Y;
+                }
+            }
         }
 
-        private void AdjustRotation(double desiredRotation)
+        private void AdjustRotation(GameTime gameTime)
         {
+            float amountToRotate = gameTime.ElapsedGameTime.Milliseconds / 500.0f;
+
+            // convert movementVector to radians (or degrees)
+            double desiredRotation = Math.Atan2(MovementVector.X, -MovementVector.Y);
+
+            // get rotation closer to the MovementVector angle
             if (Rotation < desiredRotation)
             {
-                Rotation += 0.02f;
+                Rotation += amountToRotate;
             }
             else if (Rotation > desiredRotation)
             {
-                Rotation -= 0.02f;
+                Rotation -= amountToRotate;
             }
+        }
+
+        private BoundsCheck WithinScreenBounds(Vector2 newPosition)
+        {
+            if (newPosition.X < 50 || newPosition.X > ViewportWidth - 50)
+            {
+                return BoundsCheck.OutsideLeftOrRight;
+            }
+
+            if (newPosition.Y < 50 || newPosition.Y > ViewportHeight - 50)
+            {
+                return BoundsCheck.OutsideTopOrBottom;
+            }
+
+            return BoundsCheck.InBounds;
         }
     }
 }
