@@ -13,11 +13,9 @@ namespace SpaceDefender
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        //private Backdrop _backdrop;
-        //private Alien _alien1;
-        //private Hud _hud;
+        //private Primitives2D _primitives2D;
 
-        private readonly List<IGameObject> _gameObjects = new List<IGameObject>();
+        private readonly List<IDrawableGameComponent> _gameObjects = new List<IDrawableGameComponent>();
 
         public Game1()
         {
@@ -37,7 +35,10 @@ namespace SpaceDefender
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Create a new SpriteBatch, which can be used to draw textures.
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            //_primitives2D = new Primitives2D(GraphicsDevice, _spriteBatch);
+            Primitives2D.Initialize(GraphicsDevice, _spriteBatch);
 
             base.Initialize();
         }
@@ -48,22 +49,19 @@ namespace SpaceDefender
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            IGameObject backdrop = new Backdrop(Content.Load<Texture2D>("space"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            IDrawableGameComponent backdrop = new Backdrop(Content.Load<Texture2D>("space"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             _gameObjects.Add(backdrop);
 
-            IGameObject player = new Player(Content.Load<Texture2D>("ship (1)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - 50.0f));
+            IDrawableGameComponent player = new Player(Content.Load<Texture2D>("ship (1)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - 50.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             _gameObjects.Add(player);
 
-            IGameObject alien1 = new Alien(Content.Load<Texture2D>("ship (3)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f));
+            IDrawableGameComponent alien1 = new Alien(Content.Load<Texture2D>("ship (3)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             _gameObjects.Add(alien1);
 
-            IGameObject alien2 = new Alien2(Content.Load<Texture2D>("ship (4)"), new Vector2(100.0f, 100.0f));
+            IDrawableGameComponent alien2 = new Alien2(Content.Load<Texture2D>("ship (4)"), new Vector2(100.0f, 100.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             _gameObjects.Add(alien2);
 
-            IGameObject hud = new Hud(Content.Load<SpriteFont>("arial-32"), GraphicsDevice.Viewport.Width) { Score = 0, Lives = 3 };
+            IDrawableGameComponent hud = new Hud(Content.Load<SpriteFont>("arial-32"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) { Score = 0, Lives = 3 };
             _gameObjects.Add(hud);
         }
 
@@ -90,7 +88,7 @@ namespace SpaceDefender
                 Exit();
             }
 
-            foreach (IGameObject item in _gameObjects)
+            foreach (IDrawableGameComponent item in _gameObjects)
             {
                 item.Update(gameTime, keyboardState);
             }
@@ -108,7 +106,7 @@ namespace SpaceDefender
 
             _spriteBatch.Begin();
 
-            foreach (IGameObject item in _gameObjects)
+            foreach (IDrawableGameComponent item in _gameObjects)
             {
                 item.Draw(_spriteBatch);
             }

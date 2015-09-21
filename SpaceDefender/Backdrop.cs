@@ -4,19 +4,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceDefender
 {
-    internal class Backdrop : IGameObject
+    internal class Backdrop : GameComponent, IDrawableGameComponent
     {
-        private readonly Texture2D _texture;
-        private readonly Color _color;
-        private readonly int _viewportWidth;
-        private readonly int _viewportHeight;
-
         internal Backdrop(Texture2D texture, int viewportWidth, int viewportHeight)
+            : base(texture, new Vector2(viewportWidth / 2.0f, viewportHeight / 2.0f), viewportWidth, viewportHeight)
         {
-            _texture = texture;
-            _color = Color.White;
-            _viewportWidth = viewportWidth;
-            _viewportHeight = viewportHeight;
+            Scale = Vector2.One;
+            Origin = Vector2.Zero;
+            BoundingSize = new Point {X = 0, Y = 0};
         }
 
         public void Update(GameTime gameTime, KeyboardState keyboardState)
@@ -25,7 +20,13 @@ namespace SpaceDefender
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle(0, 0, _viewportWidth, _viewportHeight), _color);
+            spriteBatch.Draw(texture: Texture,
+                             destinationRectangle: new Rectangle(0, 0, ViewportWidth, ViewportHeight),
+                             origin: Origin,
+                             scale: Scale,
+                             rotation: Rotation,
+                             color: Color,
+                             effects: SpriteEffect);
         }
     }
 }
