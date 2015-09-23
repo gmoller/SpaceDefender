@@ -1,17 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-namespace SpaceDefender
+namespace SpaceDefender.GameComponents
 {
     internal class Backdrop : GameComponent, IDrawableGameComponent
     {
-        internal Backdrop(Texture2D texture, int viewportWidth, int viewportHeight)
-            : base(texture, viewportWidth, viewportHeight)
+        internal Backdrop(int viewportWidth, int viewportHeight)
+            : base(viewportWidth, viewportHeight)
         {
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState)
+        public void LoadContent(ContentManager content)
+        {
+            Texture = content.Load<Texture2D>("stars");
+        }
+
+        public void Update(GameTime gameTime, InputState inputState)
         {
         }
 
@@ -23,6 +28,12 @@ namespace SpaceDefender
                              scale: Vector2.One,
                              rotation: 0.0f,
                              color: Color);
+        }
+
+        public bool IsAlive
+        {
+            get { return true; }
+            set { }
         }
     }
 }

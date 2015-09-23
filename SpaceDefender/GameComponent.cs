@@ -11,9 +11,8 @@ namespace SpaceDefender
         protected int ViewportWidth;
         protected int ViewportHeight;
 
-        internal GameComponent(Texture2D texture, int viewportWidth, int viewportHeight)
+        internal GameComponent(int viewportWidth, int viewportHeight)
         {
-            Texture = texture;
             Color = Color.White;
             ViewportWidth = viewportWidth;
             ViewportHeight = viewportHeight;

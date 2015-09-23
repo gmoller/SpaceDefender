@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceDefender
 {
@@ -14,16 +12,16 @@ namespace SpaceDefender
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private KeyboardState _previousState;
+        private InputState _inputState;
 
-        private readonly List<IDrawableGameComponent> _gameObjects = new List<IDrawableGameComponent>();
+        private readonly StateManager _gameStateManager = new StateManager();
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this)
                 {
-                    PreferredBackBufferWidth = 1024,
-                    PreferredBackBufferHeight = 768
+                    PreferredBackBufferWidth = 1920, // 1024
+                    PreferredBackBufferHeight = 1080 // 768
                 };
             Content.RootDirectory = "Content";
         }
@@ -36,19 +34,14 @@ namespace SpaceDefender
         /// </summary>
         protected override void Initialize()
         {
-            //Window.Position = new Point(0, 0);
-            //Window.IsBorderless = true;
-
-            // make full-screen and set resolution to monitors resolution
-            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            _graphics.IsFullScreen = true;
-            _graphics.ApplyChanges();
+            MakeFullScreen();
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            Primitives2D.Initialize(GraphicsDevice, _spriteBatch);
-            _previousState = Keyboard.GetState();
+            Primitives2D.Initialize(GraphicsDevice);
+            _inputState = new InputState();
+
+            SetupGameStates(_gameStateManager);
 
             base.Initialize();
         }
@@ -59,20 +52,10 @@ namespace SpaceDefender
         /// </summary>
         protected override void LoadContent()
         {
-            IDrawableGameComponent backdrop = new Backdrop(Content.Load<Texture2D>("stars"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            _gameObjects.Add(backdrop);
-
-            IDrawableGameComponent player = new Player(Content.Load<Texture2D>("ship (1)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height - 50.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            _gameObjects.Add(player);
-
-            IDrawableGameComponent alien1 = new Alien(Content.Load<Texture2D>("ship (3)"), new Vector2(GraphicsDevice.Viewport.Width / 2.0f, GraphicsDevice.Viewport.Height / 2.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            _gameObjects.Add(alien1);
-
-            IDrawableGameComponent alien2 = new Alien2(Content.Load<Texture2D>("ship (4)"), new Vector2(100.0f, 100.0f), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-            _gameObjects.Add(alien2);
-
-            IDrawableGameComponent hud = new Hud(Content.Load<SpriteFont>("arial-32"), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height) { Score = 0, Lives = 3 };
-            _gameObjects.Add(hud);
+            _gameStateManager.ChangeState("Paused");
+            _gameStateManager.LoadContent(Content);
+            _gameStateManager.ChangeState("Playing");
+            _gameStateManager.LoadContent(Content);
         }
 
         /// <summary>
@@ -91,28 +74,19 @@ namespace SpaceDefender
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-
-            if (keyboardState.IsKeyDown(Keys.Escape))
+            _inputState.Update();
+            if (_inputState.IsExitGame(PlayerIndex.One))
             {
                 Exit();
             }
-
-            if (keyboardState.IsKeyDown(Keys.F1) && !_previousState.IsKeyDown(Keys.F1))
+            if (_inputState.IsF1(PlayerIndex.One))
             {
                 ShowBounds = !ShowBounds;
             }
 
-            foreach (IDrawableGameComponent item in _gameObjects)
-            {
-                item.Update(gameTime, keyboardState);
-            }
-
-            // TODO: collision detection
+            _gameStateManager.Update(gameTime, _inputState);
 
             base.Update(gameTime);
-
-            _previousState = keyboardState;
         }
 
         /// <summary>
@@ -125,21 +99,34 @@ namespace SpaceDefender
 
             _spriteBatch.Begin();
 
-            foreach (IDrawableGameComponent item in _gameObjects)
-            {
-                item.Draw(_spriteBatch);
-            }
+            _gameStateManager.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
-    }
 
-    internal enum BoundsCheck
-    {
-        InBounds = 0,
-        OutsideLeftOrRight = 1,
-        OutsideTopOrBottom = 2
+        private void MakeFullScreen()
+        {
+            //Window.Position = new Point(0, 0);
+            //Window.IsBorderless = true;
+
+            // make full-screen and set resolution to monitors resolution
+            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
+        }
+
+        private void SetupGameStates(StateManager gameStateManager)
+        {
+            //gameStateManager.AddState("Menu", new MenuState(textureManager, _font, gameState, this));
+            //gameStateManager.AddState("HighScores", new HighScoresState(_font, gameState));
+            gameStateManager.AddState("Playing", new PlayingState(gameStateManager, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            //gameStateManager.AddState("LevelCleared", new LevelClearedState(_font, gameState));
+            gameStateManager.AddState("Paused", new PausedState(gameStateManager, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            //gameStateManager.AddState("GameOver", new GameOverState(textureManager, _font, gameState));
+            //gameStateManager.AddState("Quit", new QuitState(_font, gameState));
+        }
     }
 }

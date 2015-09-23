@@ -1,25 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-namespace SpaceDefender
+namespace SpaceDefender.GameComponents
 {
     internal class Hud : GameComponent, IDrawableGameComponent
     {
-        private readonly SpriteFont _font;
+        private SpriteFont _font;
         private Vector2 _padding;
 
         internal int Score { get; set; }
         internal int Lives { get; set; }
 
-        internal Hud(SpriteFont font, int viewportWidth, int viewportHeight)
-            : base(null, viewportWidth, viewportHeight)
+        internal Hud(int viewportWidth, int viewportHeight)
+            : base(viewportWidth, viewportHeight)
         {
-            _font = font;
             _padding = new Vector2(20.0f, 10.0f);
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState)
+        public void LoadContent(ContentManager content)
+        {
+            _font = content.Load<SpriteFont>("arial-32");
+        }
+
+        public void Update(GameTime gameTime, InputState inputState)
         {
         }
 
@@ -31,6 +35,12 @@ namespace SpaceDefender
 
             spriteBatch.DrawString(_font, score, new Vector2(_padding.X, _padding.Y), Color);
             spriteBatch.DrawString(_font, lives, new Vector2(ViewportWidth - livesLength.X - _padding.X, _padding.Y), Color);
+        }
+
+        public bool IsAlive
+        {
+            get { return true; }
+            set { }
         }
     }
 }

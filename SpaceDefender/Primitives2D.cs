@@ -7,11 +7,9 @@ namespace SpaceDefender
     internal static class Primitives2D
     {
         private static Texture2D _pixel; // our pixel texture we will be using to draw primitives
-        private static SpriteBatch _spriteBatch;
 
-        internal static void Initialize(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+        internal static void Initialize(GraphicsDevice graphicsDevice)
         {
-            _spriteBatch = spriteBatch;
             _pixel = new Texture2D(graphicsDevice, 1, 1);
             _pixel.SetData(new[] { Color.White });
         }

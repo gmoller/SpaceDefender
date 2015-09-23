@@ -1,13 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender
 {
-    internal class DrawableGameComponent : GameComponent
+    internal abstract class DrawableGameComponent : GameComponent, IDrawableGameComponent
     {
         protected Vector2 MovementVector;
         protected Point BoundingSize;
         protected SpriteEffects SpriteEffect;
+
+        /// <summary>
+        /// Area to "lift" off of spritesheet for the sprite to be displayed.
+        /// </summary>
+        protected Rectangle SourceRectangle;
 
         /// <summary>
         /// Position of center of object with respect to the entire viewport. Top-left co-ordinate is 0,0.
@@ -28,6 +34,8 @@ namespace SpaceDefender
         /// Amount to rotate the texture by (in radians) when drawing to the screen. 0 * PI = no rotation, 0.5 * PI = 90 degrees, 1 * PI = 180 degrees, 1.5 * PI = 270.
         /// </summary>
         protected float Rotation;
+
+        protected bool IsAlive;
 
         internal Rectangle BoundingRectangle
         {
@@ -51,36 +59,56 @@ namespace SpaceDefender
 
         internal Circle BoundingCircle
         {
-            get { return new Circle(CenterPosition, (BoundingSize.X / 2.0f) * Scale.X); }
+            get
+            {
+                float radius = (MathHelper.Max(BoundingSize.X, BoundingSize.Y) / 2.0f) * Scale.X;
+
+                return new Circle(CenterPosition, radius);
+            }
         }
 
-        internal DrawableGameComponent(Texture2D texture, Vector2 position, int viewportWidth, int viewportHeight)
-            : base(texture, viewportWidth, viewportHeight)
+        internal DrawableGameComponent(Vector2 position, int viewportWidth, int viewportHeight)
+            : base(viewportWidth, viewportHeight)
         {
             CenterPosition = position;
-            Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
             Scale = new Vector2(0.3f, 0.3f);
             Rotation = 0.0f;
             MovementVector = Vector2.Zero;
-            BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
             SpriteEffect = SpriteEffects.None;
+            IsAlive = true;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture: Texture,
-                             position: CenterPosition,
-                             origin: Origin,
-                             scale: Scale,
-                             rotation: Rotation,
-                             color: Color,
-                             effects: SpriteEffect);
+        public abstract void LoadContent(ContentManager content);
 
-            if (Game1.ShowBounds)
+        public abstract void Update(GameTime gameTime, InputState inputState);
+
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            if (IsAlive)
             {
-                var color = new Color(0, 128, 0, 128);
-                spriteBatch.DrawCircle(BoundingCircle.Center, BoundingCircle.Radius, color, 1000);
+                spriteBatch.Draw(texture: Texture,
+                                 position: CenterPosition,
+                                 origin: Origin,
+                                 scale: Scale,
+                                 rotation: Rotation,
+                                 color: Color,
+                                 effects: SpriteEffect,
+                                 sourceRectangle: SourceRectangle);
+
+                spriteBatch.DrawCircle(CenterPosition, 1, Color.RoyalBlue);
+
+                if (Game1.ShowBounds)
+                {
+                    var color = new Color(0, 128, 0, 128);
+                    spriteBatch.DrawCircle(BoundingCircle.Center, BoundingCircle.Radius, color, 1000);
+                }
             }
+        }
+
+        bool IDrawableGameComponent.IsAlive
+        {
+            get { return IsAlive; }
+            set { IsAlive = value; }
         }
     }
 }

@@ -38,18 +38,25 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Alien.cs" />
-    <Compile Include="Alien2.cs" />
-    <Compile Include="Backdrop.cs" />
-    <Compile Include="Circle.cs" />
+    <Compile Include="GameComponents\Alien.cs" />
+    <Compile Include="GameComponents\Alien2.cs" />
+    <Compile Include="GameComponents\Backdrop.cs" />
+    <Compile Include="GameComponents\PausedDisplay.cs" />
+    <Compile Include="InputState.cs" />
+    <Compile Include="PausedState.cs" />
+    <Compile Include="PlayingState.cs" />
+    <Compile Include="StateManager.cs" />
+    <Compile Include="Structs.cs" />
     <Compile Include="DrawableGameComponent.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameComponent.cs" />
-    <Compile Include="Hud.cs" />
+    <Compile Include="GameComponents\Hud.cs" />
     <Compile Include="IDrawableGameComponent.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="GameComponents\Player.cs" />
     <Compile Include="Primitives2D.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="GameComponents\ProjectileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

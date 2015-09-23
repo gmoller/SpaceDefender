@@ -1,16 +1,17 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-namespace SpaceDefender
+namespace SpaceDefender.GameComponents
 {
-    internal class Alien2 : DrawableGameComponent, IDrawableGameComponent
+    internal class Alien2 : DrawableGameComponent
     {
-        internal Alien2(Texture2D texture, Vector2 position, int viewportWidth, int viewportHeight)
-            : base(texture, position, viewportWidth, viewportHeight)
+        internal Alien2(Vector2 position, int viewportWidth, int viewportHeight)
+            : base(position, viewportWidth, viewportHeight)
         {
             SpriteEffect = SpriteEffects.FlipVertically;
+
             //Rotation = 0.0f; // North
             //Rotation = Convert.ToSingle(0.5f * Math.PI); // East
             //Rotation = Convert.ToSingle(Math.PI); // South
@@ -24,12 +25,18 @@ namespace SpaceDefender
             MovementVector = new Vector2(1.0f, 0.3f);
         }
 
-        public void Update(GameTime gameTime, KeyboardState keyboardState)
+        public override void LoadContent(ContentManager content)
         {
-            const float epsilon = 0.0001f;
+            Texture = content.Load<Texture2D>("ship (4)");
+            SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+            Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
+            BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
+        }
 
+        public override void Update(GameTime gameTime, InputState inputState)
+        {
             // do nothing if MovementVector is zero
-            if (Math.Abs(MovementVector.X - 0) < epsilon && Math.Abs(MovementVector.Y - 0) < epsilon)
+            if (MovementVector.X.IsApproximately(0) && MovementVector.Y.IsApproximately(0))
             {
                 return;
             }
@@ -60,19 +67,22 @@ namespace SpaceDefender
 
         private void AdjustRotation(GameTime gameTime)
         {
-            float amountToRotate = gameTime.ElapsedGameTime.Milliseconds / 500.0f;
+            float amountToRotate = gameTime.ElapsedGameTime.Milliseconds / 250.0f;
 
             // convert movementVector to radians (or degrees)
             double desiredRotation = Math.Atan2(MovementVector.X, -MovementVector.Y);
 
             // get rotation closer to the MovementVector angle
-            if (Rotation < desiredRotation)
+            if (!Rotation.IsApproximately(desiredRotation, 0.01f))
             {
-                Rotation += amountToRotate;
-            }
-            else if (Rotation > desiredRotation)
-            {
-                Rotation -= amountToRotate;
+                if (Rotation < desiredRotation)
+                {
+                    Rotation += amountToRotate;
+                }
+                else if (Rotation > desiredRotation)
+                {
+                    Rotation -= amountToRotate;
+                }
             }
         }
 

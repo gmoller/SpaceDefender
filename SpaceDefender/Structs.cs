@@ -16,4 +16,11 @@ namespace SpaceDefender
             _radius = radius;
         }
     }
+
+    internal enum BoundsCheck
+    {
+        InBounds = 0,
+        OutsideLeftOrRight = 1,
+        OutsideTopOrBottom = 2
+    }
 }
