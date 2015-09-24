@@ -27,33 +27,36 @@ namespace SpaceDefender.GameComponents
 
         public override void Update(GameTime gameTime, InputState inputState)
         {
-            int rnd = _random.Next(0, 10);
-
-            float distance = gameTime.ElapsedGameTime.Milliseconds / 10.0f;
-
-            MovementVector = Vector2.Zero;
-
-            switch (rnd)
+            if (IsAlive)
             {
-                case 0:
-                    // move up
-                    MovementVector.Y -= 1.0f;
-                    break;
-                case 1:
-                    // move right
-                    MovementVector.X += 1.0f;
-                    break;
-                case 2:
-                    // move down
-                    MovementVector.Y += 1.0f;
-                    break;
-                case 3:
-                    // move left
-                    MovementVector.X -= 1.0f;
-                    break;
-            }
+                int rnd = _random.Next(0, 10);
 
-            CenterPosition += MovementVector * distance;
+                float distance = gameTime.ElapsedGameTime.Milliseconds/10.0f;
+
+                MovementVector = Vector2.Zero;
+
+                switch (rnd)
+                {
+                    case 0:
+                        // move up
+                        MovementVector.Y -= 1.0f;
+                        break;
+                    case 1:
+                        // move right
+                        MovementVector.X += 1.0f;
+                        break;
+                    case 2:
+                        // move down
+                        MovementVector.Y += 1.0f;
+                        break;
+                    case 3:
+                        // move left
+                        MovementVector.X -= 1.0f;
+                        break;
+                }
+
+                CenterPosition += MovementVector*distance;
+            }
         }
     }
 }

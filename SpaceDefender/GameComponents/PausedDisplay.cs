@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CollisionDetectionLibrary.Shapes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -18,6 +19,23 @@ namespace SpaceDefender.GameComponents
             _padding = new Vector2(20.0f, 10.0f);
         }
 
+        public bool IsAlive
+        {
+            get { return true; }
+            set { }
+        }
+
+        Vector2 IDrawableGameComponent.CenterPosition
+        {
+            get { return Vector2.Zero; }
+            set { }
+        }
+
+        public Circle BoundingCircle
+        {
+            get { return new Circle(); }
+        }
+
         public void LoadContent(ContentManager content)
         {
             _font = content.Load<SpriteFont>("arial-32");
@@ -31,12 +49,6 @@ namespace SpaceDefender.GameComponents
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(_font, MESSAGE, new Vector2((ViewportWidth - _messageLength.X) / 2.0f, _padding.Y), Color.Red);
-        }
-
-        public bool IsAlive
-        {
-            get { return true; }
-            set { }
         }
     }
 }

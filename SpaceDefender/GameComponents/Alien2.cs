@@ -35,32 +35,35 @@ namespace SpaceDefender.GameComponents
 
         public override void Update(GameTime gameTime, InputState inputState)
         {
-            // do nothing if MovementVector is zero
-            if (MovementVector.X.IsApproximately(0) && MovementVector.Y.IsApproximately(0))
+            if (IsAlive)
             {
-                return;
-            }
-
-            AdjustRotation(gameTime);
-
-            // calculate new sprite position
-            float distance = gameTime.ElapsedGameTime.Milliseconds / 2.0f;
-            Vector2 newPosition = CenterPosition + (MovementVector * distance);
-
-            BoundsCheck check = WithinScreenBounds(newPosition);
-            if (check == BoundsCheck.InBounds)
-            {
-                CenterPosition = newPosition;
-            }
-            else
-            {
-                if (check == BoundsCheck.OutsideLeftOrRight)
+                // do nothing if MovementVector is zero
+                if (MovementVector.X.ApproximatelyEquals(0) && MovementVector.Y.ApproximatelyEquals(0))
                 {
-                    MovementVector.X = -MovementVector.X;
+                    return;
+                }
+
+                AdjustRotation(gameTime);
+
+                // calculate new sprite position
+                float distance = gameTime.ElapsedGameTime.Milliseconds/2.0f;
+                Vector2 newPosition = CenterPosition + (MovementVector*distance);
+
+                BoundsCheck check = WithinScreenBounds(newPosition);
+                if (check == BoundsCheck.InBounds)
+                {
+                    CenterPosition = newPosition;
                 }
                 else
                 {
-                    MovementVector.Y = -MovementVector.Y;
+                    if (check == BoundsCheck.OutsideLeftOrRight)
+                    {
+                        MovementVector.X = -MovementVector.X;
+                    }
+                    else
+                    {
+                        MovementVector.Y = -MovementVector.Y;
+                    }
                 }
             }
         }
@@ -73,7 +76,7 @@ namespace SpaceDefender.GameComponents
             double desiredRotation = Math.Atan2(MovementVector.X, -MovementVector.Y);
 
             // get rotation closer to the MovementVector angle
-            if (!Rotation.IsApproximately(desiredRotation, 0.01f))
+            if (!Rotation.ApproximatelyEquals(desiredRotation, 0.01f))
             {
                 if (Rotation < desiredRotation)
                 {

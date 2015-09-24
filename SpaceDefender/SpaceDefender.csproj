@@ -38,15 +38,16 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnimatedSprite.cs" />
     <Compile Include="GameComponents\Alien.cs" />
     <Compile Include="GameComponents\Alien2.cs" />
     <Compile Include="GameComponents\Backdrop.cs" />
     <Compile Include="GameComponents\PausedDisplay.cs" />
     <Compile Include="InputState.cs" />
-    <Compile Include="PausedState.cs" />
-    <Compile Include="PlayingState.cs" />
+    <Compile Include="GameStates\PausedState.cs" />
+    <Compile Include="GameStates\PlayingState.cs" />
     <Compile Include="StateManager.cs" />
-    <Compile Include="Structs.cs" />
+    <Compile Include="Enumerations.cs" />
     <Compile Include="DrawableGameComponent.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Game1.cs" />
@@ -67,13 +68,18 @@
       <HintPath>$(MSBuildProgramFiles32)\MonoGame\v3.0\Assemblies\WindowsGL\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CollisionDetectionLibrary\CollisionDetectionLibrary.csproj">
+      <Project>{9e725532-4fea-4414-9fa8-ea9033657f86}</Project>
+      <Name>CollisionDetectionLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <!-- Specify the search path explicitly so the ResolveAssemblyReferences task picks the right ones -->
   <Target Name="BeforeResolveReferences">

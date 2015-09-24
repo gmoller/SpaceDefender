@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CollisionDetectionLibrary.Shapes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender.GameComponents
 {
@@ -9,6 +11,23 @@ namespace SpaceDefender.GameComponents
         internal Backdrop(int viewportWidth, int viewportHeight)
             : base(viewportWidth, viewportHeight)
         {
+        }
+
+        public bool IsAlive
+        {
+            get { return true; }
+            set { }
+        }
+
+        Vector2 IDrawableGameComponent.CenterPosition
+        {
+            get { return Vector2.Zero; }
+            set { }
+        }
+
+        public Circle BoundingCircle
+        {
+            get { return new Circle(); }
         }
 
         public void LoadContent(ContentManager content)
@@ -28,12 +47,6 @@ namespace SpaceDefender.GameComponents
                              scale: Vector2.One,
                              rotation: 0.0f,
                              color: Color);
-        }
-
-        public bool IsAlive
-        {
-            get { return true; }
-            set { }
         }
     }
 }

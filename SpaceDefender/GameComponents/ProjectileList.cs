@@ -77,7 +77,7 @@ namespace SpaceDefender.GameComponents
         public override void Update(GameTime gameTime, InputState inputState)
         {
             // do nothing if MovementVector is zero
-            if (MovementVector.X.IsApproximately(0) && MovementVector.Y.IsApproximately(0))
+            if (MovementVector.X.ApproximatelyEquals(0) && MovementVector.Y.ApproximatelyEquals(0))
             {
                 return;
             }

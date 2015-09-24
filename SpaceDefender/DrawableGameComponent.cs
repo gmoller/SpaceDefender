@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CollisionDetectionLibrary;
+using CollisionDetectionLibrary.Shapes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender
 {
@@ -37,33 +41,33 @@ namespace SpaceDefender
 
         protected bool IsAlive;
 
-        internal Rectangle BoundingRectangle
-        {
-            get
-            {
-                var rectangle = new Rectangle();
-                if (Texture != null)
-                {
-                    rectangle = new Rectangle
-                    {
-                        Width = (int)(BoundingSize.X * Scale.X),
-                        Height = (int)(BoundingSize.Y * Scale.Y),
-                        X = (int)(CenterPosition.X - (Origin.X * Scale.X)),
-                        Y = (int)(CenterPosition.Y - (Origin.Y * Scale.Y))
-                    };
-                }
+        //internal Rectangle BoundingRectangle
+        //{
+        //    get
+        //    {
+        //        var rectangle = new Rectangle();
+        //        if (Texture != null)
+        //        {
+        //            rectangle = new Rectangle
+        //            {
+        //                Width = (int)(BoundingSize.X * Scale.X),
+        //                Height = (int)(BoundingSize.Y * Scale.Y),
+        //                X = (int)(CenterPosition.X - (Origin.X * Scale.X)),
+        //                Y = (int)(CenterPosition.Y - (Origin.Y * Scale.Y))
+        //            };
+        //        }
 
-                return rectangle;
-            }
-        }
+        //        return rectangle;
+        //    }
+        //}
 
-        internal Circle BoundingCircle
+        private Circle BoundingCircle
         {
             get
             {
                 float radius = (MathHelper.Max(BoundingSize.X, BoundingSize.Y) / 2.0f) * Scale.X;
 
-                return new Circle(CenterPosition, radius);
+                return new Circle(VectorFactory.GetVector2D(CenterPosition.X, CenterPosition.Y), radius);
             }
         }
 
@@ -76,6 +80,23 @@ namespace SpaceDefender
             MovementVector = Vector2.Zero;
             SpriteEffect = SpriteEffects.None;
             IsAlive = true;
+        }
+
+        bool IDrawableGameComponent.IsAlive
+        {
+            get { return IsAlive; }
+            set { IsAlive = value; }
+        }
+
+        Vector2 IDrawableGameComponent.CenterPosition
+        {
+            get { return CenterPosition; }
+            set { CenterPosition = value; }
+        }
+
+        Circle IDrawableGameComponent.BoundingCircle
+        {
+            get { return BoundingCircle; }
         }
 
         public abstract void LoadContent(ContentManager content);
@@ -100,15 +121,9 @@ namespace SpaceDefender
                 if (Game1.ShowBounds)
                 {
                     var color = new Color(0, 128, 0, 128);
-                    spriteBatch.DrawCircle(BoundingCircle.Center, BoundingCircle.Radius, color, 1000);
+                    spriteBatch.DrawCircle(new Vector2(BoundingCircle.Center.X, BoundingCircle.Center.Y), BoundingCircle.Radius, color, 1000);
                 }
             }
-        }
-
-        bool IDrawableGameComponent.IsAlive
-        {
-            get { return IsAlive; }
-            set { IsAlive = value; }
         }
     }
 }

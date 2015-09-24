@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceDefender.GameComponents;
 
-namespace SpaceDefender
+namespace SpaceDefender.GameStates
 {
     internal class PausedState : IGameState
     {

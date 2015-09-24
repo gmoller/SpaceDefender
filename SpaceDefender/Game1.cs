@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using SpaceDefender.GameStates;
 
 namespace SpaceDefender
 {
@@ -16,12 +18,14 @@ namespace SpaceDefender
 
         private readonly StateManager _gameStateManager = new StateManager();
 
+        private Effect _effect;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this)
                 {
-                    PreferredBackBufferWidth = 1920, // 1024
-                    PreferredBackBufferHeight = 1080 // 768
+                    PreferredBackBufferWidth = 1024, // 1024, 1920
+                    PreferredBackBufferHeight = 768 // 768, 1080
                 };
             Content.RootDirectory = "Content";
         }
@@ -56,6 +60,10 @@ namespace SpaceDefender
             _gameStateManager.LoadContent(Content);
             _gameStateManager.ChangeState("Playing");
             _gameStateManager.LoadContent(Content);
+
+            _effect = Content.Load<Effect>("myEffect");
+            //_effect.Parameters["Contrast"].SetValue(0.0f);
+            //_effect.Parameters["Brightness"].SetValue(0.0f);
         }
 
         /// <summary>
@@ -97,6 +105,7 @@ namespace SpaceDefender
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            //_spriteBatch.Begin(SpriteSortMode.Deferred, effect: _effect);
             _spriteBatch.Begin();
 
             _gameStateManager.Draw(_spriteBatch);
@@ -108,14 +117,14 @@ namespace SpaceDefender
 
         private void MakeFullScreen()
         {
-            //Window.Position = new Point(0, 0);
+            Window.Position = new Point(0, 0);
             //Window.IsBorderless = true;
 
             // make full-screen and set resolution to monitors resolution
-            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            _graphics.IsFullScreen = true;
-            _graphics.ApplyChanges();
+            //_graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            //_graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            //_graphics.IsFullScreen = true;
+            //_graphics.ApplyChanges();
         }
 
         private void SetupGameStates(StateManager gameStateManager)
