@@ -10,12 +10,12 @@ namespace SpaceDefender.GameComponents
     {
         private readonly List<IDrawableGameComponent> _projectiles = new List<IDrawableGameComponent>(10);
 
-        internal ProjectileList(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(position, viewportWidth, viewportHeight)
+        internal ProjectileList(Vector2 position)
+            : base(position)
         {
             for (int i = 0; i < 10; i++)
             {
-                _projectiles.Add(new Projectile(position, viewportWidth, viewportHeight));
+                _projectiles.Add(new Projectile(position));
             }
         }
 
@@ -59,8 +59,8 @@ namespace SpaceDefender.GameComponents
 
     internal class Projectile : DrawableGameComponent
     {
-        internal Projectile(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(position, viewportWidth, viewportHeight)
+        internal Projectile(Vector2 position)
+            : base(position)
         {
             SourceRectangle = new Rectangle(13, 12, 6, 10);
             Origin = new Vector2(3.0f, 5.0f);
@@ -98,12 +98,12 @@ namespace SpaceDefender.GameComponents
 
         private BoundsCheck WithinScreenBounds(Vector2 newPosition)
         {
-            if (newPosition.X < 50 || newPosition.X > ViewportWidth - 50)
+            if (newPosition.X < 50 || newPosition.X > GameRoot.ScreenSize.X - 50)
             {
                 return BoundsCheck.OutsideLeftOrRight;
             }
 
-            if (newPosition.Y < 50 || newPosition.Y > ViewportHeight - 50)
+            if (newPosition.Y < 50 || newPosition.Y > GameRoot.ScreenSize.Y - 50)
             {
                 return BoundsCheck.OutsideTopOrBottom;
             }

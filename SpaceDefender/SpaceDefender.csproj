@@ -50,8 +50,7 @@
     <Compile Include="Enumerations.cs" />
     <Compile Include="DrawableGameComponent.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Game1.cs" />
-    <Compile Include="GameComponent.cs" />
+    <Compile Include="GameRoot.cs" />
     <Compile Include="GameComponents\Hud.cs" />
     <Compile Include="IDrawableGameComponent.cs" />
     <Compile Include="GameComponents\Player.cs" />

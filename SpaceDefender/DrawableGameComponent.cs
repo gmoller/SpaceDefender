@@ -8,9 +8,12 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender
 {
-    internal abstract class DrawableGameComponent : GameComponent, IDrawableGameComponent
+    internal abstract class DrawableGameComponent : IDrawableGameComponent
     {
+        protected Texture2D Texture;
+        protected Color Color = Color.White;
         protected Vector2 MovementVector;
+        protected Point Size;
         protected Point BoundingSize;
         protected SpriteEffects SpriteEffect;
 
@@ -41,26 +44,6 @@ namespace SpaceDefender
 
         protected bool IsAlive;
 
-        //internal Rectangle BoundingRectangle
-        //{
-        //    get
-        //    {
-        //        var rectangle = new Rectangle();
-        //        if (Texture != null)
-        //        {
-        //            rectangle = new Rectangle
-        //            {
-        //                Width = (int)(BoundingSize.X * Scale.X),
-        //                Height = (int)(BoundingSize.Y * Scale.Y),
-        //                X = (int)(CenterPosition.X - (Origin.X * Scale.X)),
-        //                Y = (int)(CenterPosition.Y - (Origin.Y * Scale.Y))
-        //            };
-        //        }
-
-        //        return rectangle;
-        //    }
-        //}
-
         private Circle BoundingCircle
         {
             get
@@ -71,10 +54,9 @@ namespace SpaceDefender
             }
         }
 
-        internal DrawableGameComponent(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(viewportWidth, viewportHeight)
+        internal DrawableGameComponent(Vector2 centerPosition)
         {
-            CenterPosition = position;
+            CenterPosition = centerPosition;
             Scale = new Vector2(0.3f, 0.3f);
             Rotation = 0.0f;
             MovementVector = Vector2.Zero;
@@ -109,16 +91,17 @@ namespace SpaceDefender
             {
                 spriteBatch.Draw(texture: Texture,
                                  position: CenterPosition,
+                                 sourceRectangle: SourceRectangle,
                                  origin: Origin,
                                  scale: Scale,
                                  rotation: Rotation,
                                  color: Color,
                                  effects: SpriteEffect,
-                                 sourceRectangle: SourceRectangle);
+                                 layerDepth: 0.0f);
 
                 spriteBatch.DrawCircle(CenterPosition, 1, Color.RoyalBlue);
 
-                if (Game1.ShowBounds)
+                if (GameRoot.ShowBounds)
                 {
                     var color = new Color(0, 128, 0, 128);
                     spriteBatch.DrawCircle(new Vector2(BoundingCircle.Center.X, BoundingCircle.Center.Y), BoundingCircle.Radius, color, 1000);

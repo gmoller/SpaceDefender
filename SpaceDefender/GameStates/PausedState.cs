@@ -10,12 +10,12 @@ namespace SpaceDefender.GameStates
     {
         private readonly StateManager _gameStateManager;
         private Dictionary<string, IDrawableGameComponent> _gameComponents = new Dictionary<string, IDrawableGameComponent>();
-        private readonly IDrawableGameComponent _pausedMessage;
+        private readonly PausedDisplay _pausedMessage;
 
-        public PausedState(StateManager gameStateManager, int viewportWidth, int viewportHeight)
+        public PausedState(StateManager gameStateManager)
         {
             _gameStateManager = gameStateManager;
-            _pausedMessage = new PausedDisplay(viewportWidth, viewportHeight);
+            _pausedMessage = new PausedDisplay();
         }
 
         public string Id

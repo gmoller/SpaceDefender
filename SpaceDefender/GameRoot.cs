@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using SpaceDefender.GameStates;
 
 namespace SpaceDefender
@@ -8,8 +9,13 @@ namespace SpaceDefender
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    internal class GameRoot : Game
     {
+        internal static GameRoot Instance { get; set; }
+        //private static Viewport Viewport { get { return Instance.GraphicsDevice.Viewport; } }
+        //internal static Vector2 ScreenSize { get { return new Vector2(Viewport.Width, Viewport.Height); } }
+        internal static Vector2 ScreenSize { get { return new Vector2(Instance._graphics.PreferredBackBufferWidth, Instance._graphics.PreferredBackBufferHeight); } }
+
         internal static bool ShowBounds;
 
         private readonly GraphicsDeviceManager _graphics;
@@ -20,12 +26,14 @@ namespace SpaceDefender
 
         private Effect _effect;
 
-        public Game1()
+        public GameRoot()
         {
+            Instance = this;
+
             _graphics = new GraphicsDeviceManager(this)
                 {
-                    PreferredBackBufferWidth = 1024, // 1024, 1920
-                    PreferredBackBufferHeight = 768 // 768, 1080
+                    PreferredBackBufferWidth = 1600, // 800, 1024, 1600, 1680, 1920
+                    PreferredBackBufferHeight = 900 // 600, 768, 900, 1050, 1080
                 };
             Content.RootDirectory = "Content";
         }
@@ -61,7 +69,7 @@ namespace SpaceDefender
             _gameStateManager.ChangeState("Playing");
             _gameStateManager.LoadContent(Content);
 
-            _effect = Content.Load<Effect>("myEffect");
+            //_effect = Content.Load<Effect>("myEffect");
             //_effect.Parameters["Contrast"].SetValue(0.0f);
             //_effect.Parameters["Brightness"].SetValue(0.0f);
         }
@@ -82,19 +90,27 @@ namespace SpaceDefender
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            _inputState.Update();
-            if (_inputState.IsExitGame(PlayerIndex.One))
+            try
             {
-                Exit();
+                _inputState.Update();
+                if (_inputState.IsExitGame(PlayerIndex.One))
+                {
+                    Exit();
+                }
+                if (_inputState.IsF1(PlayerIndex.One))
+                {
+                    ShowBounds = !ShowBounds;
+                }
+
+                _gameStateManager.Update(gameTime, _inputState);
+
+                base.Update(gameTime);
             }
-            if (_inputState.IsF1(PlayerIndex.One))
+            catch (Exception ex)
             {
-                ShowBounds = !ShowBounds;
+                LogError(ex);
+                throw;
             }
-
-            _gameStateManager.Update(gameTime, _inputState);
-
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -103,16 +119,24 @@ namespace SpaceDefender
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            try
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //_spriteBatch.Begin(SpriteSortMode.Deferred, effect: _effect);
-            _spriteBatch.Begin();
+                //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, effect: _effect);
+                _spriteBatch.Begin();
 
-            _gameStateManager.Draw(_spriteBatch);
+                _gameStateManager.Draw(_spriteBatch);
 
-            _spriteBatch.End();
+                _spriteBatch.End();
 
-            base.Draw(gameTime);
+                base.Draw(gameTime);
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+                throw;
+            }
         }
 
         private void MakeFullScreen()
@@ -131,11 +155,20 @@ namespace SpaceDefender
         {
             //gameStateManager.AddState("Menu", new MenuState(textureManager, _font, gameState, this));
             //gameStateManager.AddState("HighScores", new HighScoresState(_font, gameState));
-            gameStateManager.AddState("Playing", new PlayingState(gameStateManager, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            gameStateManager.AddState("Playing", new PlayingState(gameStateManager));
             //gameStateManager.AddState("LevelCleared", new LevelClearedState(_font, gameState));
-            gameStateManager.AddState("Paused", new PausedState(gameStateManager, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+            gameStateManager.AddState("Paused", new PausedState(gameStateManager));
             //gameStateManager.AddState("GameOver", new GameOverState(textureManager, _font, gameState));
             //gameStateManager.AddState("Quit", new QuitState(_font, gameState));
+        }
+
+        private void LogError(Exception ex)
+        {
+            using (var file = new StreamWriter("debug.txt"))
+            {
+                file.WriteLine("{0} - {1}", DateTime.Now.ToString("s"), ex.Message);
+                file.WriteLine("CallStack: {0}", ex.StackTrace);
+            }
         }
     }
 }

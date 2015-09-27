@@ -21,8 +21,8 @@ namespace SpaceDefender
         // Amount of time that has passed since we last animated
         private float _frameTimer;
 
-        public AnimatedSprite(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(position, viewportWidth, viewportHeight)
+        public AnimatedSprite(Vector2 position)
+            : base(position)
         {
             Rows = 4;
             Columns = 4;

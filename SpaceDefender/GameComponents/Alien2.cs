@@ -7,8 +7,8 @@ namespace SpaceDefender.GameComponents
 {
     internal class Alien2 : DrawableGameComponent
     {
-        internal Alien2(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(position, viewportWidth, viewportHeight)
+        internal Alien2(Vector2 centerPosition)
+            : base(centerPosition)
         {
             SpriteEffect = SpriteEffects.FlipVertically;
 
@@ -91,12 +91,12 @@ namespace SpaceDefender.GameComponents
 
         private BoundsCheck WithinScreenBounds(Vector2 newPosition)
         {
-            if (newPosition.X < 50 || newPosition.X > ViewportWidth - 50)
+            if (newPosition.X < 50 || newPosition.X > GameRoot.ScreenSize.X - 50)
             {
                 return BoundsCheck.OutsideLeftOrRight;
             }
 
-            if (newPosition.Y < 50 || newPosition.Y > ViewportHeight - 50)
+            if (newPosition.Y < 50 || newPosition.Y > GameRoot.ScreenSize.Y - 50)
             {
                 return BoundsCheck.OutsideTopOrBottom;
             }

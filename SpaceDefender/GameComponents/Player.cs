@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -11,8 +12,8 @@ namespace SpaceDefender.GameComponents
         private readonly ProjectileList _projectiles;
         private SoundEffect _soundEffect;
 
-        internal Player(Vector2 position, int viewportWidth, int viewportHeight, ProjectileList projectiles)
-            : base(position, viewportWidth, viewportHeight)
+        internal Player(Vector2 centerPosition, ProjectileList projectiles)
+            : base(centerPosition)
         {
             Color = Color.LightGreen;
             _projectiles = projectiles;

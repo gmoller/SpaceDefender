@@ -5,16 +5,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class Hud : GameComponent, IDrawableGameComponent
+    internal class Hud : IDrawableGameComponent
     {
+        private readonly Color _color = Color.White;
         private SpriteFont _font;
         private Vector2 _padding;
 
         internal int Score { get; set; }
-        internal int Lives { get; set; }
+        internal int Lives { private get; set; }
 
-        internal Hud(int viewportWidth, int viewportHeight)
-            : base(viewportWidth, viewportHeight)
+        internal Hud()
         {
             _padding = new Vector2(20.0f, 10.0f);
         }
@@ -51,8 +51,8 @@ namespace SpaceDefender.GameComponents
             string lives = string.Format("Lives: {0,1:D1}", Lives);
             Vector2 livesLength = _font.MeasureString(lives);
 
-            spriteBatch.DrawString(_font, score, new Vector2(_padding.X, _padding.Y), Color);
-            spriteBatch.DrawString(_font, lives, new Vector2(ViewportWidth - livesLength.X - _padding.X, _padding.Y), Color);
+            spriteBatch.DrawString(_font, score, new Vector2(_padding.X, _padding.Y), _color);
+            spriteBatch.DrawString(_font, lives, new Vector2(GameRoot.ScreenSize.X - livesLength.X - _padding.X, _padding.Y), _color);
         }
     }
 }

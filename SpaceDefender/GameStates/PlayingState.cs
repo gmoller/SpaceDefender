@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -12,32 +13,38 @@ namespace SpaceDefender.GameStates
         private readonly StateManager _gameStateManager;
         private Dictionary<string, IDrawableGameComponent> _gameComponents = new Dictionary<string, IDrawableGameComponent>();
         private SoundEffect _soundEffect;
+        private readonly Random _random;
 
-        internal PlayingState(StateManager gameStateManager, int viewportWidth, int viewportHeight)
+        internal PlayingState(StateManager gameStateManager)
         {
             _gameStateManager = gameStateManager;
 
-            IDrawableGameComponent backdrop = new Backdrop(viewportWidth, viewportHeight);
-            _gameComponents.Add("backdrop", backdrop);
+            IDrawableGameComponent backdrop1 = new Backdrop(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f));
+            _gameComponents.Add("backdrop1", backdrop1);
 
-            var projectiles = new ProjectileList(Vector2.Zero, viewportWidth, viewportHeight);
+            //IDrawableGameComponent backdrop2 = new Backdrop(new Vector2(GameRoot.ScreenSize.X / 2.0f, (GameRoot.ScreenSize.Y / 2.0f) + GameRoot.ScreenSize.Y));
+            //_gameComponents.Add("backdrop2", backdrop2);
+
+            var projectiles = new ProjectileList(Vector2.Zero);
             _gameComponents.Add("projectiles", projectiles);
 
-            IDrawableGameComponent player = new Player(new Vector2(viewportWidth / 2.0f, viewportHeight - 50.0f), viewportWidth, viewportHeight, projectiles);
+            IDrawableGameComponent player = new Player(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y - 50.0f), projectiles);
             _gameComponents.Add("player", player);
 
-            IDrawableGameComponent alien1 = new Alien(new Vector2(viewportWidth / 2.0f, viewportHeight / 2.0f), viewportWidth, viewportHeight);
+            IDrawableGameComponent alien1 = new Alien(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f));
             _gameComponents.Add("alien1", alien1);
 
-            IDrawableGameComponent alien2 = new Alien2(new Vector2(100.0f, 100.0f), viewportWidth, viewportHeight);
+            IDrawableGameComponent alien2 = new Alien2(new Vector2(100.0f, 100.0f));
             _gameComponents.Add("alien2", alien2);
 
-            IDrawableGameComponent explosion = new AnimatedSprite(Vector2.Zero, viewportWidth, viewportHeight);
+            IDrawableGameComponent explosion = new AnimatedSprite(Vector2.Zero);
             explosion.IsAlive = false;
             _gameComponents.Add("explosion", explosion);
 
-            IDrawableGameComponent hud = new Hud(viewportWidth, viewportHeight) { Score = 0, Lives = 3 };
+            IDrawableGameComponent hud = new Hud { Score = 0, Lives = 3 };
             _gameComponents.Add("hud", hud);
+
+            _random = new Random();
         }
 
         public string Id
@@ -104,7 +111,9 @@ namespace SpaceDefender.GameStates
                     {
                         if (projectile.BoundingCircle.CollidesWith(alien1.BoundingCircle))
                         {
+                            IncrementScore();
                             AlienExplosion(projectile, alien1);
+                            CreateNewAlien("alien1");
                         }
                     }
 
@@ -113,11 +122,20 @@ namespace SpaceDefender.GameStates
                     {
                         if (projectile.BoundingCircle.CollidesWith(alien2.BoundingCircle))
                         {
+                            IncrementScore();
                             AlienExplosion(projectile, alien2);
+                            CreateNewAlien("alien2");
                         }
                     }
                 }
             }
+        }
+
+        private void IncrementScore()
+        {
+            // increment score
+            var hud = (Hud)_gameComponents["hud"];
+            hud.Score++;
         }
 
         private void AlienExplosion(IDrawableGameComponent projectile, IDrawableGameComponent alien)
@@ -125,15 +143,18 @@ namespace SpaceDefender.GameStates
             _soundEffect.Play();
             projectile.IsAlive = false;
 
-            // increment score
-            var hud = (Hud)_gameComponents["hud"];
-            hud.Score++;
-
             IDrawableGameComponent explosion = _gameComponents["explosion"];
             explosion.CenterPosition = alien.CenterPosition;
             explosion.IsAlive = true;
 
             alien.IsAlive = false;
+        }
+
+        private void CreateNewAlien(string alien1)
+        {
+            IDrawableGameComponent alien = _gameComponents[alien1];
+            alien.IsAlive = true;
+            alien.CenterPosition = new Vector2(_random.Next(50, (int)GameRoot.ScreenSize.X - 50), _random.Next(50, (int)GameRoot.ScreenSize.Y - 100));
         }
     }
 }

@@ -9,8 +9,8 @@ namespace SpaceDefender.GameComponents
     {
         private readonly Random _random;
 
-        internal Alien(Vector2 position, int viewportWidth, int viewportHeight)
-            : base(position, viewportWidth, viewportHeight)
+        internal Alien(Vector2 centerPosition)
+            : base(centerPosition)
         {
             SpriteEffect = SpriteEffects.FlipVertically;
             _random = new Random();
