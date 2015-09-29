@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class PausedDisplay
+    public class PausedDisplay
     {
         private const string MESSAGE = "Game Paused";
 
@@ -12,7 +12,7 @@ namespace SpaceDefender.GameComponents
         private Vector2 _messageLength;
         private Vector2 _padding;
 
-        internal PausedDisplay()
+        public PausedDisplay()
         {
             _padding = new Vector2(20.0f, 10.0f);
         }

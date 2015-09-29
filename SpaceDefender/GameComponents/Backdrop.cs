@@ -7,11 +7,11 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class Backdrop : DrawableGameComponent
+    public class Backdrop : DrawableGameComponent
     {
         private readonly List<Texture2D> _textures = new List<Texture2D>();
 
-        internal Backdrop(Vector2 centerPosition)
+        public Backdrop(Vector2 centerPosition)
             : base(centerPosition)
         {
         }
@@ -36,17 +36,9 @@ namespace SpaceDefender.GameComponents
         public override void Update(GameTime gameTime, InputState inputState)
         {
             var direction = new Vector2(0.0f, 1.0f);
-            //var direction = new Vector2(1.0f, 0.0f);
             var velocity = new Vector2(0.0f, 200.0f);
-            //var velocity = new Vector2(100.0f, 0.0f);
 
             CenterPosition += direction * velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            //float scaledSizeX = Size.X * Scale.X;
-            //if (CenterPosition.X > scaledSizeX + scaledSizeX / 2.0f)
-            //{
-            //    CenterPosition = new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f);
-            //}
 
             float scaledSizeY = Size.Y * Scale.Y;
 

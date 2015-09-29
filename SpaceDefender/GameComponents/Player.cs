@@ -7,12 +7,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class Player : DrawableGameComponent
+    public class Player : DrawableGameComponent
     {
         private readonly ProjectileList _projectiles;
         private SoundEffect _soundEffect;
 
-        internal Player(Vector2 centerPosition, ProjectileList projectiles)
+        public Player(Vector2 centerPosition, ProjectileList projectiles)
             : base(centerPosition)
         {
             Color = Color.LightGreen;
@@ -32,7 +32,7 @@ namespace SpaceDefender.GameComponents
         {
             MovementVector = Vector2.Zero;
 
-            float distance = gameTime.ElapsedGameTime.Milliseconds / 10.0f;
+            float distanceToMove = gameTime.ElapsedGameTime.Milliseconds / 10.0f;
 
             if (inputState.IsRight(PlayerIndex.One))
             {
@@ -48,7 +48,7 @@ namespace SpaceDefender.GameComponents
                 Shoot(_projectiles);
             }
 
-            CenterPosition += MovementVector * distance;
+            CenterPosition += MovementVector * distanceToMove;
         }
 
         private void Shoot(IEnumerable<IDrawableGameComponent> projectiles)

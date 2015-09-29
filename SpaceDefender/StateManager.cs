@@ -14,12 +14,12 @@ namespace SpaceDefender
         void Draw(SpriteBatch spriteBatch);
     }
 
-    internal class StateManager
+    public class StateManager
     {
         private readonly Dictionary<string, IGameState> _stateStore = new Dictionary<string, IGameState>();
         private IGameState _currentState;
 
-        internal string CurrentStateId
+        public string CurrentStateId
         {
             get { return _currentState.Id; }
         }

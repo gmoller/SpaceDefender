@@ -5,11 +5,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class Alien : DrawableGameComponent
+    public class Alien : DrawableGameComponent
     {
         private readonly Random _random;
 
-        internal Alien(Vector2 centerPosition)
+        public Alien(Vector2 centerPosition)
             : base(centerPosition)
         {
             SpriteEffect = SpriteEffects.FlipVertically;

@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class Alien2 : DrawableGameComponent
+    public class Alien2 : DrawableGameComponent
     {
-        internal Alien2(Vector2 centerPosition)
+        public Alien2(Vector2 centerPosition)
             : base(centerPosition)
         {
             SpriteEffect = SpriteEffects.FlipVertically;
@@ -29,6 +29,7 @@ namespace SpaceDefender.GameComponents
         {
             Texture = content.Load<Texture2D>("ship (4)");
             SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+            //Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
             Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
             BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
         }

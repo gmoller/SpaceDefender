@@ -8,7 +8,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender
 {
-    internal abstract class DrawableGameComponent : IDrawableGameComponent
+    public abstract class DrawableGameComponent : IDrawableGameComponent
     {
         protected Texture2D Texture;
         protected Color Color = Color.White;
@@ -25,7 +25,28 @@ namespace SpaceDefender
         /// <summary>
         /// Position of center of object with respect to the entire viewport. Top-left co-ordinate is 0,0.
         /// </summary>
-        protected Vector2 CenterPosition;
+        private Vector2 _centerPosition;
+
+        protected Vector2 CenterPosition
+        {
+            get { return _centerPosition; }
+            set
+            {
+                _centerPosition = value;
+                TopLeftPosition = CenterPosition - Origin * Scale;
+                BottomRightPosition = CenterPosition + Origin * Scale;
+            }
+        }
+
+        /// <summary>
+        /// Position of top left co-ordinates of object with respect to the entire viewport.
+        /// </summary>
+        protected Vector2 TopLeftPosition;
+
+        /// <summary>
+        /// Position of bottom right co-ordinates of object with respect to the entire viewport.
+        /// </summary>
+        protected Vector2 BottomRightPosition;
 
         /// <summary>
         /// Origin offsets the CenterPosition when drawing to the screen. So top-left is CenterPosition - Origin.
@@ -54,10 +75,10 @@ namespace SpaceDefender
             }
         }
 
-        internal DrawableGameComponent(Vector2 centerPosition)
+        protected DrawableGameComponent(Vector2 centerPosition)
         {
             CenterPosition = centerPosition;
-            Scale = new Vector2(0.3f, 0.3f);
+            Scale = new Vector2(0.2f, 0.2f) * new Vector2(GameRoot.ScreenSize.X / 1280, GameRoot.ScreenSize.Y / 720);
             Rotation = 0.0f;
             MovementVector = Vector2.Zero;
             SpriteEffect = SpriteEffects.None;
@@ -73,7 +94,10 @@ namespace SpaceDefender
         Vector2 IDrawableGameComponent.CenterPosition
         {
             get { return CenterPosition; }
-            set { CenterPosition = value; }
+            set
+            {
+                CenterPosition = value;
+            }
         }
 
         Circle IDrawableGameComponent.BoundingCircle

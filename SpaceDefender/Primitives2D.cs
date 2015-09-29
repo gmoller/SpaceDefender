@@ -4,22 +4,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender
 {
-    internal static class Primitives2D
+    public static class Primitives2D
     {
         private static Texture2D _pixel; // our pixel texture we will be using to draw primitives
 
-        internal static void Initialize(GraphicsDevice graphicsDevice)
+        public static void Initialize(GraphicsDevice graphicsDevice)
         {
             _pixel = new Texture2D(graphicsDevice, 1, 1);
             _pixel.SetData(new[] { Color.White });
         }
 
-        internal static void DrawPixel(this SpriteBatch spriteBatch, float x, float y, Color color)
+        public static void DrawPixel(this SpriteBatch spriteBatch, float x, float y, Color color)
         {
             spriteBatch.Draw(_pixel, new Vector2(x, y), color);
         }
 
-        internal static void DrawLineSegment(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
+        public static void DrawLineSegment(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
         {
             float xinc1, xinc2, yinc1, yinc2, den, num, numadd, numpixels, curpixel;
 
@@ -84,7 +84,7 @@ namespace SpaceDefender
             }
         }
 
-        internal static void DrawPolygon(this SpriteBatch spriteBatch, Vector2[] vertices, Color color)
+        public static void DrawPolygon(this SpriteBatch spriteBatch, Vector2[] vertices, Color color)
         {
             if (vertices.Length > 0)
             {
@@ -96,7 +96,7 @@ namespace SpaceDefender
             }
         }
 
-        internal static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rectangle, Color color, Boolean filled)
+        public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rectangle, Color color, Boolean filled)
         {
             if (filled)
             {
@@ -114,7 +114,7 @@ namespace SpaceDefender
             }
         }
 
-        internal static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, Color color, int segments = 16)
+        public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, Color color, int segments = 16)
         {
             var vertices = new Vector2[segments];
 

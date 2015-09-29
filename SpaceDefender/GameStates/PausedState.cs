@@ -6,7 +6,7 @@ using SpaceDefender.GameComponents;
 
 namespace SpaceDefender.GameStates
 {
-    internal class PausedState : IGameState
+    public class PausedState : IGameState
     {
         private readonly StateManager _gameStateManager;
         private Dictionary<string, IDrawableGameComponent> _gameComponents = new Dictionary<string, IDrawableGameComponent>();
@@ -44,7 +44,7 @@ namespace SpaceDefender.GameStates
         {
             if (inputState.IsPause(PlayerIndex.One))
             {
-                _gameStateManager.ChangeState("Playing", _gameComponents);
+                _gameStateManager.ChangeState("SpaceDefenderPlaying", _gameComponents);
             }
         }
 

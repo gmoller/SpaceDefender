@@ -42,10 +42,14 @@
     <Compile Include="GameComponents\Alien.cs" />
     <Compile Include="GameComponents\Alien2.cs" />
     <Compile Include="GameComponents\Backdrop.cs" />
+    <Compile Include="GameComponents\Background.cs" />
     <Compile Include="GameComponents\PausedDisplay.cs" />
+    <Compile Include="GameComponents\PlayerShip.cs" />
+    <Compile Include="GameStates\StarDefensePlayingState.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="GameStates\PausedState.cs" />
-    <Compile Include="GameStates\PlayingState.cs" />
+    <Compile Include="GameStates\SpaceDefenderPlayingState.cs" />
+    <Compile Include="PlayArea.cs" />
     <Compile Include="StateManager.cs" />
     <Compile Include="Enumerations.cs" />
     <Compile Include="DrawableGameComponent.cs" />

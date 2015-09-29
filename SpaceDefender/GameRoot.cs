@@ -9,14 +9,14 @@ namespace SpaceDefender
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    internal class GameRoot : Game
+    public class GameRoot : Game
     {
-        internal static GameRoot Instance { get; set; }
+        public static GameRoot Instance { get; set; }
         //private static Viewport Viewport { get { return Instance.GraphicsDevice.Viewport; } }
-        //internal static Vector2 ScreenSize { get { return new Vector2(Viewport.Width, Viewport.Height); } }
-        internal static Vector2 ScreenSize { get { return new Vector2(Instance._graphics.PreferredBackBufferWidth, Instance._graphics.PreferredBackBufferHeight); } }
+        //public static Vector2 ScreenSize { get { return new Vector2(Viewport.Width, Viewport.Height); } }
+        public static Vector2 ScreenSize { get { return new Vector2(Instance._graphics.PreferredBackBufferWidth, Instance._graphics.PreferredBackBufferHeight); } }
 
-        internal static bool ShowBounds;
+        public static bool ShowBounds;
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -30,11 +30,7 @@ namespace SpaceDefender
         {
             Instance = this;
 
-            _graphics = new GraphicsDeviceManager(this)
-                {
-                    PreferredBackBufferWidth = 1600, // 800, 1024, 1600, 1680, 1920
-                    PreferredBackBufferHeight = 900 // 600, 768, 900, 1050, 1080
-                };
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -46,7 +42,8 @@ namespace SpaceDefender
         /// </summary>
         protected override void Initialize()
         {
-            MakeFullScreen();
+            //MakeFullScreen();
+            SetResolution(1280, 720); // 800x600, 1024x768, 1280x720, 1600x900, 1680x1050, 1920x1080
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -66,7 +63,9 @@ namespace SpaceDefender
         {
             _gameStateManager.ChangeState("Paused");
             _gameStateManager.LoadContent(Content);
-            _gameStateManager.ChangeState("Playing");
+            _gameStateManager.ChangeState("SpaceDefenderPlaying");
+            _gameStateManager.LoadContent(Content);
+            _gameStateManager.ChangeState("StarDefensePlaying");
             _gameStateManager.LoadContent(Content);
 
             //_effect = Content.Load<Effect>("myEffect");
@@ -151,11 +150,21 @@ namespace SpaceDefender
             //_graphics.ApplyChanges();
         }
 
+        private void SetResolution(int width, int height)
+        {
+            Window.Position = new Point(0, 0);
+
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
+            _graphics.ApplyChanges();
+        }
+
         private void SetupGameStates(StateManager gameStateManager)
         {
             //gameStateManager.AddState("Menu", new MenuState(textureManager, _font, gameState, this));
             //gameStateManager.AddState("HighScores", new HighScoresState(_font, gameState));
-            gameStateManager.AddState("Playing", new PlayingState(gameStateManager));
+            gameStateManager.AddState("SpaceDefenderPlaying", new SpaceDefenderPlayingState(gameStateManager));
+            gameStateManager.AddState("StarDefensePlaying", new StarDefensePlayingState(gameStateManager));
             //gameStateManager.AddState("LevelCleared", new LevelClearedState(_font, gameState));
             gameStateManager.AddState("Paused", new PausedState(gameStateManager));
             //gameStateManager.AddState("GameOver", new GameOverState(textureManager, _font, gameState));

@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    internal class ProjectileList : DrawableGameComponent, IEnumerable<IDrawableGameComponent>
+    public class ProjectileList : DrawableGameComponent, IEnumerable<IDrawableGameComponent>
     {
         private readonly List<IDrawableGameComponent> _projectiles = new List<IDrawableGameComponent>(10);
 
-        internal ProjectileList(Vector2 position)
+        public ProjectileList(Vector2 position)
             : base(position)
         {
             for (int i = 0; i < 10; i++)
@@ -57,9 +57,9 @@ namespace SpaceDefender.GameComponents
         }
     }
 
-    internal class Projectile : DrawableGameComponent
+    public class Projectile : DrawableGameComponent
     {
-        internal Projectile(Vector2 position)
+        public Projectile(Vector2 position)
             : base(position)
         {
             SourceRectangle = new Rectangle(13, 12, 6, 10);
@@ -111,12 +111,12 @@ namespace SpaceDefender.GameComponents
             return BoundsCheck.InBounds;
         }
 
-        internal void SetMovementVector(Vector2 v)
+        public void SetMovementVector(Vector2 v)
         {
             MovementVector = v;
         }
 
-        internal void SetCenterPosition(Vector2 v)
+        public void SetCenterPosition(Vector2 v)
         {
             CenterPosition = v;
         }

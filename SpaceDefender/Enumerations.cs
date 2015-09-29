@@ -1,6 +1,6 @@
 ﻿namespace SpaceDefender
 {
-    internal enum BoundsCheck
+    public enum BoundsCheck
     {
         InBounds = 0,
         OutsideLeftOrRight = 1,

@@ -13,17 +13,17 @@ namespace SpaceDefender
     {
         private const int MAX_INPUTS = 4;
 
-        internal readonly GamePadState[] CurrentGamePadStates;
-        internal readonly KeyboardState[] CurrentKeyboardStates;
-        internal readonly bool[] GamePadWasConnected;
+        public readonly GamePadState[] CurrentGamePadStates;
+        public readonly KeyboardState[] CurrentKeyboardStates;
+        public readonly bool[] GamePadWasConnected;
 
-        internal readonly GamePadState[] LastGamePadStates;
-        internal readonly KeyboardState[] LastKeyboardStates;
+        public readonly GamePadState[] LastGamePadStates;
+        public readonly KeyboardState[] LastKeyboardStates;
 
-        internal MouseState CurrentMouseState { get; private set; }
-        internal MouseState LastMouseState { get; private set; }
+        public MouseState CurrentMouseState { get; private set; }
+        public MouseState LastMouseState { get; private set; }
 
-        internal InputState()
+        public InputState()
         {
             CurrentKeyboardStates = new KeyboardState[MAX_INPUTS];
             CurrentGamePadStates = new GamePadState[MAX_INPUTS];
@@ -40,7 +40,7 @@ namespace SpaceDefender
         /// <summary>
         ///    Reads the latest state of the keyboard and gamepad.
         /// </summary>
-        internal void Update()
+        public void Update()
         {
             for (int i = 0; i < MAX_INPUTS; i++)
             {
@@ -65,31 +65,31 @@ namespace SpaceDefender
 
         #region Mouse
 
-        internal bool IsNewLeftMouseClick(out MouseState mouseState)
+        public bool IsNewLeftMouseClick(out MouseState mouseState)
         {
             mouseState = CurrentMouseState;
             return (CurrentMouseState.LeftButton == ButtonState.Released && LastMouseState.LeftButton == ButtonState.Pressed);
         }
 
-        internal bool IsNewRightMouseClick(out MouseState mouseState)
+        public bool IsNewRightMouseClick(out MouseState mouseState)
         {
             mouseState = CurrentMouseState;
             return (CurrentMouseState.RightButton == ButtonState.Released && LastMouseState.RightButton == ButtonState.Pressed);
         }
 
-        internal bool IsNewThirdMouseClick(out MouseState mouseState)
+        public bool IsNewThirdMouseClick(out MouseState mouseState)
         {
             mouseState = CurrentMouseState;
             return (CurrentMouseState.MiddleButton == ButtonState.Pressed && LastMouseState.MiddleButton == ButtonState.Released);
         }
 
-        internal bool IsNewMouseScrollUp(out MouseState mouseState)
+        public bool IsNewMouseScrollUp(out MouseState mouseState)
         {
             mouseState = CurrentMouseState;
             return (CurrentMouseState.ScrollWheelValue > LastMouseState.ScrollWheelValue);
         }
 
-        internal bool IsNewMouseScrollDown(out MouseState mouseState)
+        public bool IsNewMouseScrollDown(out MouseState mouseState)
         {
             mouseState = CurrentMouseState;
             return (CurrentMouseState.ScrollWheelValue < LastMouseState.ScrollWheelValue);
@@ -105,12 +105,12 @@ namespace SpaceDefender
         ///    If this is null, it will accept input from any player. When a keypress
         ///    is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        internal bool IsNewKeyPress(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsNewKeyPress(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             return IsKeyPressed(key, controllingPlayer, out playerIndex, true);
         }
 
-        internal bool IsKeyPressed(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsKeyPressed(Keys key, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             return IsKeyPressed(key, controllingPlayer, out playerIndex, false);
         }
@@ -144,28 +144,28 @@ namespace SpaceDefender
                     IsNewKeyPress(key, PlayerIndex.Four, out playerIndex));
         }
 
-        internal bool IsExitGame(PlayerIndex? controllingPlayer)
+        public bool IsExitGame(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) || IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsF1(PlayerIndex? controllingPlayer)
+        public bool IsF1(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsNewKeyPress(Keys.F1, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsPause(PlayerIndex? controllingPlayer)
+        public bool IsPause(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsNewKeyPress(Keys.Pause, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsLeft(PlayerIndex? controllingPlayer)
+        public bool IsLeft(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
@@ -174,7 +174,7 @@ namespace SpaceDefender
                    IsNewButtonPress(Buttons.LeftThumbstickLeft, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsRight(PlayerIndex? controllingPlayer)
+        public bool IsRight(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
@@ -183,143 +183,143 @@ namespace SpaceDefender
                    IsNewButtonPress(Buttons.LeftThumbstickRight, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsUp(PlayerIndex? controllingPlayer)
+        public bool IsUp(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Up, controllingPlayer, out playerIndex) ||
+            return IsKeyPressed(Keys.Up, controllingPlayer, out playerIndex) ||
                    IsNewButtonPress(Buttons.DPadUp, controllingPlayer, out playerIndex) ||
                    IsNewButtonPress(Buttons.LeftThumbstickUp, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsDown(PlayerIndex? controllingPlayer)
+        public bool IsDown(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
-            return IsNewKeyPress(Keys.Down, controllingPlayer, out playerIndex) ||
+            return IsKeyPressed(Keys.Down, controllingPlayer, out playerIndex) ||
                    IsNewButtonPress(Buttons.DPadDown, controllingPlayer, out playerIndex) ||
                    IsNewButtonPress(Buttons.LeftThumbstickDown, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsSpace(PlayerIndex? controllingPlayer)
+        public bool IsSpace(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
             return IsNewKeyPress(Keys.Space, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsScrollLeft(PlayerIndex? controllingPlayer)
+        public bool IsScrollLeft(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.A, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsScrollRight(PlayerIndex? controllingPlayer)
+        public bool IsScrollRight(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.D, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsScrollUp(PlayerIndex? controllingPlayer)
+        public bool IsScrollUp(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.W, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsScrollDown(PlayerIndex? controllingPlayer)
+        public bool IsScrollDown(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.S, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsZoomOut(PlayerIndex? controllingPlayer)
+        public bool IsZoomOut(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.OemMinus, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsZoomIn(PlayerIndex? controllingPlayer)
+        public bool IsZoomIn(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.OemPlus, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsRotateClockwise(PlayerIndex? controllingPlayer)
+        public bool IsRotateClockwise(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.OemPeriod, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsRotateAntiClockwise(PlayerIndex? controllingPlayer)
+        public bool IsRotateAntiClockwise(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.OemComma, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad1(PlayerIndex? controllingPlayer)
+        public bool IsNumPad1(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.B, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad2(PlayerIndex? controllingPlayer)
+        public bool IsNumPad2(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.N, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad3(PlayerIndex? controllingPlayer)
+        public bool IsNumPad3(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.M, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad4(PlayerIndex? controllingPlayer)
+        public bool IsNumPad4(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.G, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad5(PlayerIndex? controllingPlayer)
+        public bool IsNumPad5(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.H, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad6(PlayerIndex? controllingPlayer)
+        public bool IsNumPad6(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.J, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad7(PlayerIndex? controllingPlayer)
+        public bool IsNumPad7(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.T, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad8(PlayerIndex? controllingPlayer)
+        public bool IsNumPad8(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
             return IsKeyPressed(Keys.Y, controllingPlayer, out playerIndex);
         }
 
-        internal bool IsNumPad9(PlayerIndex? controllingPlayer)
+        public bool IsNumPad9(PlayerIndex? controllingPlayer)
         {
             PlayerIndex playerIndex;
 
@@ -336,12 +336,12 @@ namespace SpaceDefender
         ///    If this is null, it will accept input from any player. When a button press
         ///    is detected, the output playerIndex reports which player pressed it.
         /// </summary>
-        internal bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             return IsButtonPressed(button, controllingPlayer, out playerIndex, true);
         }
 
-        internal bool IsButtonPressed(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        public bool IsButtonPressed(Buttons button, PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
         {
             return IsButtonPressed(button, controllingPlayer, out playerIndex, false);
         }
