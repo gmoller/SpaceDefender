@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameLibrary;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class Background : DrawableGameComponent
+    public class Background : GameLibrary.MyDrawableGameComponent
     {
         // Textures to hold the two background images
         private Texture2D _background;
@@ -23,7 +24,7 @@ namespace SpaceDefender.GameComponents
         // Determines if we will draw the Parallax overlay.
         private bool DrawParallax { get; set; }
 
-        private PlayerShip _playerShip;
+        private readonly PlayerShip _playerShip;
         private float _updateDelay = 0.0f;
 
         private Vector2 BackgroundScale
@@ -102,7 +103,8 @@ namespace SpaceDefender.GameComponents
             {
                 _updateDelay = 0.0f;
                 BackgroundOffset += new Vector2(_playerShip.ScrollRate, 0.0f);
-                ParallaxOffset += new Vector2(_playerShip.ScrollRate*2, 0.0f);
+                _playerShip.WorldX = BackgroundOffset.X;
+                ParallaxOffset += new Vector2(_playerShip.ScrollRate * 2, 0.0f);
             }
         }
 

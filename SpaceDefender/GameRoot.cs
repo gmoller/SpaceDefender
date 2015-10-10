@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceDefender.GameStates;
@@ -11,12 +12,10 @@ namespace SpaceDefender
     /// </summary>
     public class GameRoot : Game
     {
-        public static GameRoot Instance { get; set; }
+        private static GameRoot Instance { get; set; }
         //private static Viewport Viewport { get { return Instance.GraphicsDevice.Viewport; } }
         //public static Vector2 ScreenSize { get { return new Vector2(Viewport.Width, Viewport.Height); } }
         public static Vector2 ScreenSize { get { return new Vector2(Instance._graphics.PreferredBackBufferWidth, Instance._graphics.PreferredBackBufferHeight); } }
-
-        public static bool ShowBounds;
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -24,7 +23,8 @@ namespace SpaceDefender
 
         private readonly StateManager _gameStateManager = new StateManager();
 
-        private Effect _effect;
+        private readonly FramesPerSecondCounter _updateFramesPerSecondCounter = new FramesPerSecondCounter();
+        private readonly FramesPerSecondCounter _drawFramesPerSecondCounter = new FramesPerSecondCounter();
 
         public GameRoot()
         {
@@ -52,6 +52,9 @@ namespace SpaceDefender
 
             SetupGameStates(_gameStateManager);
 
+            _updateFramesPerSecondCounter.Reset();
+            _drawFramesPerSecondCounter.Reset();
+
             base.Initialize();
         }
 
@@ -65,8 +68,8 @@ namespace SpaceDefender
             _gameStateManager.LoadContent(Content);
             _gameStateManager.ChangeState("SpaceDefenderPlaying");
             _gameStateManager.LoadContent(Content);
-            _gameStateManager.ChangeState("StarDefensePlaying");
-            _gameStateManager.LoadContent(Content);
+            //_gameStateManager.ChangeState("StarDefensePlaying");
+            //_gameStateManager.LoadContent(Content);
 
             //_effect = Content.Load<Effect>("myEffect");
             //_effect.Parameters["Contrast"].SetValue(0.0f);
@@ -91,6 +94,9 @@ namespace SpaceDefender
         {
             try
             {
+                _updateFramesPerSecondCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
+                UpdateTitle();
+
                 _inputState.Update();
                 if (_inputState.IsExitGame(PlayerIndex.One))
                 {
@@ -98,7 +104,7 @@ namespace SpaceDefender
                 }
                 if (_inputState.IsF1(PlayerIndex.One))
                 {
-                    ShowBounds = !ShowBounds;
+                    Globals.ShowBounds = !Globals.ShowBounds;
                 }
 
                 _gameStateManager.Update(gameTime, _inputState);
@@ -120,6 +126,9 @@ namespace SpaceDefender
         {
             try
             {
+                _drawFramesPerSecondCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
+                UpdateTitle();
+
                 GraphicsDevice.Clear(Color.CornflowerBlue);
 
                 //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, effect: _effect);
@@ -156,6 +165,10 @@ namespace SpaceDefender
 
             _graphics.PreferredBackBufferWidth = width;
             _graphics.PreferredBackBufferHeight = height;
+
+            //_graphics.SynchronizeWithVerticalRetrace = false;
+            //IsFixedTimeStep = false;
+
             _graphics.ApplyChanges();
         }
 
@@ -169,6 +182,11 @@ namespace SpaceDefender
             gameStateManager.AddState("Paused", new PausedState(gameStateManager));
             //gameStateManager.AddState("GameOver", new GameOverState(textureManager, _font, gameState));
             //gameStateManager.AddState("Quit", new QuitState(_font, gameState));
+        }
+
+        private void UpdateTitle()
+        {
+            Window.Title = string.Format("SpaceDefender - Update FPS: {0:0}, Draw FPS: {1:0}", _updateFramesPerSecondCounter.AverageFramesPerSecond, _drawFramesPerSecondCounter.AverageFramesPerSecond);
         }
 
         private void LogError(Exception ex)

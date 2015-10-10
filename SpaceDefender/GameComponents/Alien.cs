@@ -1,27 +1,29 @@
 ﻿using System;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class Alien : DrawableGameComponent
+    public class Alien : GameLibrary.MyDrawableGameComponent
     {
         private readonly Random _random;
 
         public Alien(Vector2 centerPosition)
             : base(centerPosition)
         {
-            SpriteEffect = SpriteEffects.FlipVertically;
             _random = new Random();
         }
 
         public override void LoadContent(ContentManager content)
         {
-            Texture = content.Load<Texture2D>("ship (3)");
-            SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-            Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
-            BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
+            Sprite = new Sprite(new TextureAtlas(content.Load<Texture2D>("Ship"), new[] { new Rectangle(1718, 0, 317, 235) }), spriteEffects: SpriteEffects.FlipVertically)
+                {
+                    Scale = new Vector2(0.2f, 0.2f) * new Vector2(GameRoot.ScreenSize.X / 1280.0f, GameRoot.ScreenSize.Y / 720.0f),
+                    OriginNormalized = new Vector2(0.5f, 0.5f)
+                };
+            BoundingSize = new Point { X = Sprite.TextureAtlas.SingleTextureWidth, Y = Sprite.TextureAtlas.SingleTextureHeight };
             BoundingSize.X = 250;
         }
 
@@ -55,7 +57,7 @@ namespace SpaceDefender.GameComponents
                         break;
                 }
 
-                CenterPosition += MovementVector*distance;
+                CenterPosition += MovementVector * distance;
             }
         }
     }

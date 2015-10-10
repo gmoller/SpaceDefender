@@ -1,21 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class ProjectileList : DrawableGameComponent, IEnumerable<IDrawableGameComponent>
+    public class ProjectileList : GameLibrary.MyDrawableGameComponent, IEnumerable<IDrawableGameComponent>
     {
         private readonly List<IDrawableGameComponent> _projectiles = new List<IDrawableGameComponent>(10);
 
-        public ProjectileList(Vector2 position)
-            : base(position)
+        public ProjectileList(Vector2 centerPosition)
+            : base(centerPosition)
         {
             for (int i = 0; i < 10; i++)
             {
-                _projectiles.Add(new Projectile(position));
+                _projectiles.Add(new Projectile(centerPosition));
             }
         }
 
@@ -57,21 +58,22 @@ namespace SpaceDefender.GameComponents
         }
     }
 
-    public class Projectile : DrawableGameComponent
+    public class Projectile : GameLibrary.MyDrawableGameComponent
     {
-        public Projectile(Vector2 position)
-            : base(position)
+        public Projectile(Vector2 centerPosition)
+            : base(centerPosition)
         {
-            SourceRectangle = new Rectangle(13, 12, 6, 10);
-            Origin = new Vector2(3.0f, 5.0f);
-            BoundingSize = new Point { X = 10, Y = 10 };
-            Scale = new Vector2(1.0f, 1.0f);
+            BoundingSize = new Point { X = 6, Y = 10 };
             IsAlive = false;
         }
 
         public override void LoadContent(ContentManager content)
         {
-            Texture = content.Load<Texture2D>("M484BulletCollection1");
+            Sprite = new Sprite(new TextureAtlas(content.Load<Texture2D>("M484BulletCollection1"), new[] { new Rectangle(13, 12, 6, 10) }))
+                {
+                    OriginNormalized = new Vector2(0.5f, 0.5f),
+                    Scale = new Vector2(1.0f, 1.0f) * new Vector2(GameRoot.ScreenSize.X / 1280.0f, GameRoot.ScreenSize.Y / 720.0f)
+                };
         }
 
         public override void Update(GameTime gameTime, InputState inputState)

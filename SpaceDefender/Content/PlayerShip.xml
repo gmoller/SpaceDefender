@@ -1,0 +1,8 @@
+<SpriteSheet>
+  <Frames>
+    <Frame X="0" Y="0" Width="72" Height="16" />
+    <Frame X="72" Y="0" Width="72" Height="16" />
+    <Frame X="144" Y="0" Width="72" Height="16" />
+    <Frame X="216" Y="0" Width="72" Height="16" />
+  </Frames>
+</SpriteSheet>

@@ -1,17 +1,16 @@
 ﻿using System;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class Alien2 : DrawableGameComponent
+    public class Alien2 : GameLibrary.MyDrawableGameComponent
     {
         public Alien2(Vector2 centerPosition)
             : base(centerPosition)
         {
-            SpriteEffect = SpriteEffects.FlipVertically;
-
             //Rotation = 0.0f; // North
             //Rotation = Convert.ToSingle(0.5f * Math.PI); // East
             //Rotation = Convert.ToSingle(Math.PI); // South
@@ -27,11 +26,12 @@ namespace SpaceDefender.GameComponents
 
         public override void LoadContent(ContentManager content)
         {
-            Texture = content.Load<Texture2D>("ship (4)");
-            SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-            //Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
-            Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
-            BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
+            Sprite = new Sprite(new TextureAtlas(content.Load<Texture2D>("Ship"), new[] { new Rectangle(958, 450, 282, 320) }), spriteEffects: SpriteEffects.FlipVertically)
+                {
+                    Scale = new Vector2(0.2f, 0.2f)*new Vector2(GameRoot.ScreenSize.X/1280.0f, GameRoot.ScreenSize.Y/720.0f),
+                    OriginNormalized = new Vector2(0.5f, 0.5f)
+                };
+            BoundingSize = new Point { X = Sprite.TextureAtlas.SingleTextureWidth, Y = Sprite.TextureAtlas.SingleTextureHeight };
         }
 
         public override void Update(GameTime gameTime, InputState inputState)
@@ -77,15 +77,15 @@ namespace SpaceDefender.GameComponents
             double desiredRotation = Math.Atan2(MovementVector.X, -MovementVector.Y);
 
             // get rotation closer to the MovementVector angle
-            if (!Rotation.ApproximatelyEquals(desiredRotation, 0.01f))
+            if (!Sprite.Rotation.ApproximatelyEquals(desiredRotation, 0.01f))
             {
-                if (Rotation < desiredRotation)
+                if (Sprite.Rotation < desiredRotation)
                 {
-                    Rotation += amountToRotate;
+                    Sprite.Rotation += amountToRotate;
                 }
-                else if (Rotation > desiredRotation)
+                else if (Sprite.Rotation > desiredRotation)
                 {
-                    Rotation -= amountToRotate;
+                    Sprite.Rotation -= amountToRotate;
                 }
             }
         }

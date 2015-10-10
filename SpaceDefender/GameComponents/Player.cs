@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class Player : DrawableGameComponent
+    public class Player : GameLibrary.MyDrawableGameComponent
     {
         private readonly ProjectileList _projectiles;
         private SoundEffect _soundEffect;
@@ -15,17 +15,19 @@ namespace SpaceDefender.GameComponents
         public Player(Vector2 centerPosition, ProjectileList projectiles)
             : base(centerPosition)
         {
-            Color = Color.LightGreen;
             _projectiles = projectiles;
         }
 
         public override void LoadContent(ContentManager content)
         {
+            Sprite = new Sprite(new TextureAtlas(content.Load<Texture2D>("Ship"), new[] { new Rectangle(987, 0, 219, 243) }), Color.LightGreen)
+                {
+                    Scale = new Vector2(0.2f, 0.2f)*new Vector2(GameRoot.ScreenSize.X/1280.0f, GameRoot.ScreenSize.Y/720.0f),
+                    OriginNormalized = new Vector2(0.5f, 0.5f)
+                };
+            BoundingSize = new Point { X = Sprite.TextureAtlas.SingleTextureWidth, Y = Sprite.TextureAtlas.SingleTextureHeight };
+
             _soundEffect = content.Load<SoundEffect>("laser_0");
-            Texture = content.Load<Texture2D>("ship (1)");
-            SourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
-            Origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
-            BoundingSize = new Point { X = Texture.Width, Y = Texture.Height };
         }
 
         public override void Update(GameTime gameTime, InputState inputState)

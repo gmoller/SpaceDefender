@@ -1,56 +1,55 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameLibrary;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceDefender.GameComponents
 {
-    public class PlayerShip : DrawableGameComponent
+    public class PlayerShip : GameLibrary.MyDrawableGameComponent
     {
-        private AnimatedSprite _sprite;
-        private int _x = 604;
-        private int _y = 260;
-        private int _facing = 0; // 0 - right, 1 - left
-        private bool _isThrusting = false;
-        private int _scrollRate = 0;
+        private Facing _facing = Facing.Right;
+        private bool _isThrusting;
+        private int _scrollRate;
         private int _shipAccelerationRate = 1;
         private int _shipVerticalMoveRate = 3;
-        private float _speedChangeCount = 0.0f;
+        private float _speedChangeCount;
         private float _speedChangeDelay = 0.1f;
-        private float _verticalChangeCount = 0.0f;
+        private float _verticalChangeCount;
         private float _verticalChangeDelay = 0.01f;
         private int _maxHorizontalSpeed = 8;
+        public float WorldX { get; set; }
+
+        private readonly Bullets _bullets;
 
         public int ScrollRate { get { return _scrollRate; } }
 
-        public Rectangle BoundingBox
-        {
-            get { return new Rectangle(_x, _y, 72, 16); }
-        }
-
-        public PlayerShip(Vector2 centerPosition)
+        public PlayerShip(Vector2 centerPosition, Bullets bullets)
             : base(centerPosition)
         {
-            //Color = Color.SeaGreen;
-            Scale = new Vector2(2.0f, 2.0f);
+            _bullets = bullets;
+            WorldX = centerPosition.X;
         }
 
         public override void LoadContent(ContentManager content)
         {
-            Texture = content.Load<Texture2D>("PlayerShip");
-            SourceRectangle = new Rectangle(0, 0, 72, Texture.Height);
-            Origin = new Vector2(72 / 2.0f, Texture.Height / 2.0f);
-            BoundingSize = new Point { X = 72, Y = Texture.Height };
+            var reader = new TextureAtlasReader();
+            Sprite = new Sprite(reader.Read(content.Load<Texture2D>("PlayerShip")))
+                {
+                    Scale = new Vector2(2.0f, 2.0f) * new Vector2(GameRoot.ScreenSize.X / 1280.0f, GameRoot.ScreenSize.Y / 720.0f),
+                    OriginNormalized = new Vector2(0.5f, 0.5f)
+                }; // Color.SeaGreen;
+            BoundingSize = new Point { X = Sprite.TextureAtlas.SingleTextureWidth, Y = Sprite.TextureAtlas.SingleTextureHeight };
         }
 
         public override void Update(GameTime gameTime, InputState inputState)
         {
-            if (_facing == 0) // right
+            if (_facing == Facing.Right)
             {
-                SourceRectangle = _isThrusting ? new Rectangle(72, 0, 72, Texture.Height) : new Rectangle(0, 0, 72, Texture.Height);
+                Sprite.TextureAtlas.Frame = _isThrusting ? 1 : 0;
             }
-            else // left
+            else // Left
             {
-                SourceRectangle = _isThrusting ? new Rectangle(216, 0, 72, Texture.Height) : new Rectangle(144, 0, 72, Texture.Height);
+                Sprite.TextureAtlas.Frame = _isThrusting ? 3 : 2;
             }
 
             _speedChangeCount += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -64,6 +63,11 @@ namespace SpaceDefender.GameComponents
             {
                 CheckVerticalMovementKeys(gameTime, inputState);
             }
+
+            if (inputState.IsSpace(PlayerIndex.One))
+            {
+                _bullets.Fire(CenterPosition, _facing);
+            }
         }
 
         private void CheckHorizontalMovementKeys(GameTime gameTime, InputState inputState)
@@ -76,6 +80,7 @@ namespace SpaceDefender.GameComponents
                 if (_scrollRate < _maxHorizontalSpeed)
                 {
                     _scrollRate += _shipAccelerationRate;
+                    
                     if (_scrollRate > _maxHorizontalSpeed)
                     {
                         _scrollRate = _maxHorizontalSpeed;
@@ -83,7 +88,7 @@ namespace SpaceDefender.GameComponents
                     resetTimer = true;
                 }
                 _isThrusting = true;
-                _facing = 0;
+                _facing = Facing.Right;
             }
 
             if (inputState.IsLeft(PlayerIndex.One))
@@ -98,7 +103,7 @@ namespace SpaceDefender.GameComponents
                     resetTimer = true;
                 }
                 _isThrusting = true;
-                _facing = 1;
+                _facing = Facing.Left;
             }
 
             if (resetTimer)

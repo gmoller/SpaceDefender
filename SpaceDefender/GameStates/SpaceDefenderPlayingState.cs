@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -35,7 +36,7 @@ namespace SpaceDefender.GameStates
             _gameComponents.Add("alien2", alien2);
 
             //IDrawableGameComponent explosion = new AnimatedSprite("toets", Vector2.Zero, 1, 16, 1, 50);
-            IDrawableGameComponent explosion = new AnimatedSprite("Explosions", Vector2.Zero, 8, 16, 1, 20);
+            IDrawableGameComponent explosion = new Explosion(Vector2.Zero);
             explosion.IsAlive = false;
             _gameComponents.Add("explosion", explosion);
 
@@ -143,8 +144,7 @@ namespace SpaceDefender.GameStates
 
             IDrawableGameComponent explosion = _gameComponents["explosion"];
             explosion.CenterPosition = alien.CenterPosition;
-            ((AnimatedSprite)explosion).StartAnimating();
-            explosion.IsAlive = true;
+            ((AnimatedSpriteNew)explosion).Play();
 
             alien.IsAlive = false;
         }

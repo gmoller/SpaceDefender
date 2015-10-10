@@ -1,4 +1,5 @@
 ﻿using CollisionDetectionLibrary.Shapes;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,6 +37,11 @@ namespace SpaceDefender.GameComponents
         public Circle BoundingCircle
         {
             get { return new Circle(); }
+        }
+
+        public CollisionDetectionLibrary.Shapes.Rectangle BoundingRectangle
+        {
+            get { return new CollisionDetectionLibrary.Shapes.Rectangle(); }
         }
 
         public void LoadContent(ContentManager content)

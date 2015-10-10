@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,12 +16,15 @@ namespace SpaceDefender.GameStates
         {
             _gameStateManager = gameStateManager;
 
-            IDrawableGameComponent playerShip = new PlayerShip(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f));
-            //IDrawableGameComponent playerShip = new PlayerShip(new Vector2(0.0f, 0.0f));
+            IDrawableGameComponent bullets = new Bullets(new Vector2(0.0f, 0.0f));
+            IDrawableGameComponent playerShip = new PlayerShip(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f), (Bullets)bullets);
+            IDrawableGameComponent enemies = new Enemies(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f), (PlayerShip)playerShip);
             IDrawableGameComponent background = new Background(new Vector2(GameRoot.ScreenSize.X / 2.0f, GameRoot.ScreenSize.Y / 2.0f), (PlayerShip)playerShip);
 
             _gameComponents.Add("background", background);
             _gameComponents.Add("playerShip", playerShip);
+            _gameComponents.Add("bullets", bullets);
+            _gameComponents.Add("enemies", enemies);
         }
 
         public string Id

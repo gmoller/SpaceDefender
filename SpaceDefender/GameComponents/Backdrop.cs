@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+using GameLibrary;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SpaceDefender.GameComponents
 {
-    public class Backdrop : DrawableGameComponent
+    public class Backdrop : GameLibrary.MyDrawableGameComponent
     {
         private readonly List<Texture2D> _textures = new List<Texture2D>();
+        private Vector2 _scale;
 
         public Backdrop(Vector2 centerPosition)
             : base(centerPosition)
@@ -27,10 +28,7 @@ namespace SpaceDefender.GameComponents
             var texture3 = content.Load<Texture2D>("bg_1_1");
             _textures.Add(texture3);
 
-            Size = new Point(texture1.Width, texture1.Height);
-            SourceRectangle = new Rectangle(0, 0, Size.X, Size.Y);
-            Origin = new Vector2(Size.X / 2.0f, Size.Y / 2.0f);
-            Scale = new Vector2(GameRoot.ScreenSize.X / Size.X, GameRoot.ScreenSize.Y / Size.Y);
+            _scale = new Vector2(GameRoot.ScreenSize.X / texture1.Width, GameRoot.ScreenSize.Y / texture1.Height);
         }
 
         public override void Update(GameTime gameTime, InputState inputState)
@@ -40,7 +38,7 @@ namespace SpaceDefender.GameComponents
 
             CenterPosition += direction * velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            float scaledSizeY = Size.Y * Scale.Y;
+            float scaledSizeY = _textures[0].Height * _scale.Y;
 
             if (CenterPosition.Y > (scaledSizeY * (_textures.Count == 1 ? 1 : _textures.Count - 1)) + (scaledSizeY / 2.0f))
             {
@@ -52,7 +50,7 @@ namespace SpaceDefender.GameComponents
         {
             if (IsAlive)
             {
-                float scaledSizeY = Size.Y * Scale.Y;
+                float scaledSizeY = _textures[0].Height * _scale.Y;
 
                 Draw(spriteBatch, _textures[_textures.Count - 1], new Vector2(CenterPosition.X, CenterPosition.Y + scaledSizeY), Color.Red);
 
@@ -81,8 +79,9 @@ namespace SpaceDefender.GameComponents
 
         private void Draw(SpriteBatch spriteBatch, Texture2D texture, Vector2 centerPosition, Color color)
         {
-            Vector2 topLeft = centerPosition - Origin * Scale;
-            Vector2 bottomRight = centerPosition + Origin * Scale;
+            Vector2 origin = new Vector2(texture.Width/2.0f, texture.Height/2.0f);
+            Vector2 topLeft = centerPosition - origin * _scale;
+            Vector2 bottomRight = centerPosition + origin * _scale;
 
             if (topLeft.X >= GameRoot.ScreenSize.X || topLeft.Y >= GameRoot.ScreenSize.Y)
             {
@@ -96,12 +95,12 @@ namespace SpaceDefender.GameComponents
 
             spriteBatch.Draw(texture: texture,
                              position: centerPosition,
-                             sourceRectangle: SourceRectangle,
-                             origin: Origin,
-                             scale: Scale,
-                             rotation: Rotation,
+                             sourceRectangle: new Rectangle(0, 0, texture.Width, texture.Height),
+                             origin: origin,
+                             scale: _scale,
+                             rotation: 0.0f,
                              color: color,
-                             effects: SpriteEffect,
+                             effects: SpriteEffects.None,
                              layerDepth: 0.0f);
         }
     }
